@@ -17,20 +17,6 @@ public class EnvManagerTests
         this.output = output;
     }
 
-
-    [Theory]
-    [MemberData(nameof(TestData))]
-    public void GetEnvironmentValue_Types_ExcpectedValue<T>(string envValue, T expected)
-    {
-        Environment.SetEnvironmentVariable(EnvName, envValue);
-
-        var result = EnvManager.GetEnvironmentValue<T>(EnvName);
-
-        Assert.NotNull(result);
-        Assert.Equal(expected, result);
-        output.WriteLine(result.GetType().Name);
-    }
-
     [Fact]
     public void GetEnvironmentValue_WithRaiseErrorEnvNotSet_ThrowException()
     {
@@ -84,15 +70,112 @@ public class EnvManagerTests
         Assert.Contains(ConvertErrorMessage(typeof(bool)), consoleOutput.ToString());
     }
 
-    public static IEnumerable<object[]> TestData()
+    [Fact]
+    public void GetEnvironmentValue_Types_Char()
     {
-        yield return new object[] { "ñ", 'ñ' };
-        yield return new object[] { "some string", "some string" };
-        yield return new object[] { "123456789", 123456789 };
-        yield return new object[] { "1,23456789", 1.23456789d };
-        yield return new object[] { "1,23456789", 1.23456789f };
-        yield return new object[] { "1,23456789", 1.23456789m };
-        yield return new object[] { "true", true };
-        yield return new object[] { DateTime.Parse("2023-05-15T19:00:33").ToString(), DateTime.Parse("2023-05-15T19:00:33") };
+        string envValue = "ñ";
+        char expected = 'ñ';
+        Environment.SetEnvironmentVariable(EnvName, envValue);
+
+        var result = EnvManager.GetEnvironmentValue<char>(EnvName);
+
+        Assert.NotNull(result);
+        Assert.Equal(expected, result);
+        output.WriteLine(result.GetType().Name);
+    }
+
+    [Fact]
+    public void GetEnvironmentValue_Types_String()
+    {
+        string envValue = "some string";
+        string expected = "some string";
+        Environment.SetEnvironmentVariable(EnvName, envValue);
+
+        var result = EnvManager.GetEnvironmentValue<string>(EnvName);
+
+        Assert.NotNull(result);
+        Assert.Equal(expected, result);
+        output.WriteLine(result.GetType().Name);
+    }
+
+    [Fact]
+    public void GetEnvironmentValue_Types_Int()
+    {
+        string envValue = "123456789";
+        int expected = 123456789;
+        Environment.SetEnvironmentVariable(EnvName, envValue);
+
+        var result = EnvManager.GetEnvironmentValue<int>(EnvName);
+
+        Assert.NotNull(result);
+        Assert.Equal(expected, result);
+        output.WriteLine(result.GetType().Name);
+    }
+
+    [Fact]
+    public void GetEnvironmentValue_Types_Double()
+    {
+        string envValue = "1,23456789";
+        double expected = 1.23456789d;
+        Environment.SetEnvironmentVariable(EnvName, envValue);
+
+        var result = EnvManager.GetEnvironmentValue<double>(EnvName);
+
+        Assert.NotNull(result);
+        Assert.Equal(expected, result);
+        output.WriteLine(result.GetType().Name);
+    }
+
+    [Fact]
+    public void GetEnvironmentValue_Types_Float()
+    {
+        string envValue = "1,23456789";
+        float expected = 1.23456789f;
+        Environment.SetEnvironmentVariable(EnvName, envValue);
+
+        var result = EnvManager.GetEnvironmentValue<float>(EnvName);
+
+        Assert.Equal(expected, result);
+        output.WriteLine(result.GetType().Name);
+    }
+
+    [Fact]
+    public void GetEnvironmentValue_Types_Decimal()
+    {
+        string envValue = "1,23456789";
+        decimal expected = 1.23456789m;
+        Environment.SetEnvironmentVariable(EnvName, envValue);
+
+        var result = EnvManager.GetEnvironmentValue<decimal>(EnvName);
+
+        Assert.Equal(expected, result);
+        output.WriteLine(result.GetType().Name);
+    }
+
+    [Fact]
+    public void GetEnvironmentValue_Types_Boolean()
+    {
+        string envValue = "true";
+        bool expected = true;
+        Environment.SetEnvironmentVariable(EnvName, envValue);
+
+        var result = EnvManager.GetEnvironmentValue<bool>(EnvName);
+
+        Assert.Equal(expected, result);
+        output.WriteLine(result.GetType().Name);
+    }
+
+    [Fact]
+    public void GetEnvironmentValue_Types_DateTime()
+    {
+        string envValue = DateTime.Parse("2023-05-15T19:00:33").ToString();
+        DateTime expected = DateTime.Parse("2023-05-15T19:00:33");
+        Environment.SetEnvironmentVariable(EnvName, envValue);
+
+        var result = EnvManager.GetEnvironmentValue<DateTime>(EnvName);
+
+        Assert.NotNull(result);
+        Assert.Equal(expected, result);
+        output.WriteLine(result.GetType().Name);
     }
 }
