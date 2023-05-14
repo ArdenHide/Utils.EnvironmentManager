@@ -79,7 +79,6 @@ public class EnvManagerTests
 
         var result = EnvManager.GetEnvironmentValue<char>(EnvName);
 
-        Assert.NotNull(result);
         Assert.Equal(expected, result);
         output.WriteLine(result.GetType().Name);
     }
@@ -93,7 +92,6 @@ public class EnvManagerTests
 
         var result = EnvManager.GetEnvironmentValue<string>(EnvName);
 
-        Assert.NotNull(result);
         Assert.Equal(expected, result);
         output.WriteLine(result.GetType().Name);
     }
@@ -107,7 +105,6 @@ public class EnvManagerTests
 
         var result = EnvManager.GetEnvironmentValue<int>(EnvName);
 
-        Assert.NotNull(result);
         Assert.Equal(expected, result);
         output.WriteLine(result.GetType().Name);
     }
@@ -115,13 +112,12 @@ public class EnvManagerTests
     [Fact]
     public void GetEnvironmentValue_Types_Double()
     {
-        string envValue = "1,23456789";
+        string envValue = "1.23456789";
         double expected = 1.23456789d;
         Environment.SetEnvironmentVariable(EnvName, envValue);
 
         var result = EnvManager.GetEnvironmentValue<double>(EnvName);
 
-        Assert.NotNull(result);
         Assert.Equal(expected, result);
         output.WriteLine(result.GetType().Name);
     }
@@ -129,7 +125,7 @@ public class EnvManagerTests
     [Fact]
     public void GetEnvironmentValue_Types_Float()
     {
-        string envValue = "1,23456789";
+        string envValue = "1.23456789";
         float expected = 1.23456789f;
         Environment.SetEnvironmentVariable(EnvName, envValue);
 
@@ -142,7 +138,7 @@ public class EnvManagerTests
     [Fact]
     public void GetEnvironmentValue_Types_Decimal()
     {
-        string envValue = "1,23456789";
+        string envValue = "1.23456789";
         decimal expected = 1.23456789m;
         Environment.SetEnvironmentVariable(EnvName, envValue);
 
@@ -174,7 +170,6 @@ public class EnvManagerTests
 
         var result = EnvManager.GetEnvironmentValue<DateTime>(EnvName);
 
-        Assert.NotNull(result);
         Assert.Equal(expected, result);
         output.WriteLine(result.GetType().Name);
     }
