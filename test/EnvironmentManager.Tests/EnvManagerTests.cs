@@ -112,7 +112,7 @@ public class EnvManagerTests
     [Fact]
     public void GetEnvironmentValue_Types_Double()
     {
-        string envValue = "1.23456789";
+        string envValue = "1,23456789";
         double expected = 1.23456789d;
         Environment.SetEnvironmentVariable(EnvName, envValue);
 
@@ -138,7 +138,7 @@ public class EnvManagerTests
     [Fact]
     public void GetEnvironmentValue_Types_Decimal()
     {
-        string envValue = "1.23456789";
+        string envValue = "1,23456789";
         decimal expected = 1.23456789m;
         Environment.SetEnvironmentVariable(EnvName, envValue);
 
