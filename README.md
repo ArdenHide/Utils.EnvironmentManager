@@ -12,7 +12,7 @@ Method: GetEnvironmentValue<T>
 public static T GetEnvironmentValue<T>(string variableName, bool raiseException = false)
 ```
 
-This method retrieves the value of the specified environment variable and converts it to the specified type T. When working with decimal values, ensure that the decimal separator is a dot (.), not a comma (,). For example, use 1.23456789 instead of 1,23456789.
+This method retrieves the value of the specified environment variable and converts it to the specified type `T`. When working with decimal values, ensure that the decimal separator is a dot (.), not a comma (,). For example, use `1.23456789` instead of `1,23456789`.
 
 **Parameters:**
 
