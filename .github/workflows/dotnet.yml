@@ -2,7 +2,7 @@ name: SonarScanner for .NET 6
 on:
   push:
     branches:
-      - master
+      - main
   pull_request:
     types: [opened, synchronize, reopened]
 env:
