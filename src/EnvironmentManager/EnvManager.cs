@@ -1,4 +1,6 @@
-﻿namespace EnvironmentManager;
+﻿using System.Globalization;
+
+namespace EnvironmentManager;
 
 public static class EnvManager
 {
@@ -21,7 +23,7 @@ public static class EnvManager
 
         try
         {
-            T convertedValue = (T)Convert.ChangeType(envValue, typeof(T));
+            T convertedValue = ConvertValue<T>(envValue);
             return convertedValue;
         }
         catch (Exception ex)
@@ -36,5 +38,46 @@ public static class EnvManager
                 return default!;
             }
         }
+    }
+
+    private static T ConvertValue<T>(string value)
+    {
+        var targetType = typeof(T);
+
+        if (targetType == typeof(DateTime))
+        {
+            return (T)(object)ParseDateTime(value);
+        }
+        else if (IsNumericType(targetType))
+        {
+            return (T)Convert.ChangeType(value, targetType, CultureInfo.InvariantCulture);
+        }
+        else
+        {
+            return (T)Convert.ChangeType(value, targetType);
+        }
+    }
+
+    private static DateTime ParseDateTime(string value)
+    {
+        if (DateTime.TryParse(value, out var result))
+        {
+            return result;
+        }
+        else if (DateTime.TryParseExact(value, "yyyy-MM-ddTHH:mm:ss", CultureInfo.InvariantCulture, DateTimeStyles.None, out result))
+        {
+            return result;
+        }
+        else
+        {
+            throw new FormatException($"Failed to parse DateTime value '{value}'.");
+        }
+    }
+
+    private static bool IsNumericType(Type type)
+    {
+        return type == typeof(decimal) || type == typeof(double) || type == typeof(float) ||
+               type == typeof(int) || type == typeof(uint) || type == typeof(long) || type == typeof(ulong) ||
+               type == typeof(short) || type == typeof(ushort) || type == typeof(byte) || type == typeof(sbyte);
     }
 }
