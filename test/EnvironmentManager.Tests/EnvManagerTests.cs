@@ -19,12 +19,7 @@ public class EnvManagerTests
 
 
     [Theory]
-    [InlineData("ñ", 'ñ')]
-    [InlineData("some string", "some string")]
-    [InlineData("123456789", 123456789)]
-    [InlineData("1,23456789", 1.23456789)]
-    [InlineData("1,23456789", 1.23456789f)]
-    [InlineData("true", true)]
+    [MemberData(nameof(TestData))]
     public void GetEnvironmentValue_Types_ExcpectedValue<T>(string envValue, T expected)
     {
         Environment.SetEnvironmentVariable(EnvName, envValue);
@@ -51,8 +46,6 @@ public class EnvManagerTests
     [InlineData('ñ')]
     [InlineData("some string")]
     [InlineData(123456789)]
-    [InlineData(1.23456789)]
-    [InlineData(1.23456789f)]
     [InlineData(true)]
     public void GetEnvironmentValue_WithoutRaiseErrorEnvNotSet_DefaultValue<T>(T type)
     {
@@ -89,5 +82,17 @@ public class EnvManagerTests
 
         Assert.Equal(default, result);
         Assert.Contains(ConvertErrorMessage(typeof(bool)), consoleOutput.ToString());
+    }
+
+    public static IEnumerable<object[]> TestData()
+    {
+        yield return new object[] { "ñ", 'ñ' };
+        yield return new object[] { "some string", "some string" };
+        yield return new object[] { "123456789", 123456789 };
+        yield return new object[] { "1,23456789", 1.23456789d };
+        yield return new object[] { "1,23456789", 1.23456789f };
+        yield return new object[] { "1,23456789", 1.23456789m };
+        yield return new object[] { "true", true };
+        yield return new object[] { DateTime.Parse("2023-05-15T19:00:33").ToString(), DateTime.Parse("2023-05-15T19:00:33") };
     }
 }
