@@ -7,7 +7,7 @@ on:
     types: [opened, synchronize, reopened]
 env:
   SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
-  GITHUB_TOKEN: ${{ secrets.REPOSITORY_TOKEN }}
+  GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 jobs:
   build:
     runs-on: ubuntu-latest
