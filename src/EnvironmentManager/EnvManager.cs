@@ -76,8 +76,27 @@ public static class EnvManager
 
     private static DateTime ParseDateTime(string value)
     {
+        string[] formats = new string[]
+        {
+            "yyyy-MM-ddTHH:mm:ss",
+            "dd.MM.yyyy HH:mm:ss",
+            "MM/dd/yyyy HH:mm:ss",
+            "dd/MM/yyyy HH:mm:ss",
+            "yyyy-MM-dd",
+            "dd.MM.yyyy",
+            "MM/dd/yyyy",
+            "dd/MM/yyyy",
+            "HH:mm:ss",
+            "yyyy-MM-dd HH:mm:ss.fffffff",
+            "yyyy-MM-dd HH:mm:ss.FFF",
+            "yyyy/MM/dd HH:mm:ss",
+            "yyyyMMddHHmmss",
+            "yyyy-MM-ddTHH:mm:ssZ",
+            "yyyyMMdd"
+        };
+
         if (DateTime.TryParse(value, out DateTime result) ||
-            DateTime.TryParseExact(value, "yyyy-MM-ddTHH:mm:ss", CultureInfo.InvariantCulture, DateTimeStyles.None, out result))
+            DateTime.TryParseExact(value, formats, CultureInfo.InvariantCulture, DateTimeStyles.None, out result))
         {
             return result;
         }
