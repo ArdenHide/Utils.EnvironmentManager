@@ -24,7 +24,7 @@ jobs:
         uses: highbyte/sonarscan-dotnet@v2.1.3
         with:
           sonarProjectKey: "Utils.EnvironmentManager"
-          sonarProjectName: "Utils.EnvironmentManager"
+          sonarProjectName: "ArdenHide_Utils.EnvironmentManager"
           sonarOrganization: "ardenhide"
           sonarBeginArguments: /d:sonar.cs.opencover.reportsPaths="**/TestResults/**/coverage.opencover.xml" -d:sonar.cs.vstest.reportsPaths="**/TestResults/*.trx"
           dotnetTestArguments: --logger trx --collect:"XPlat Code Coverage" -- DataCollectionRunSettings.DataCollectors.DataCollector.Configuration.Format=opencover
