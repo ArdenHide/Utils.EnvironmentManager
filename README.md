@@ -1,4 +1,4 @@
-![Project logo](https://github.com/ArdenHide/Utils.EnvironmentManager/blob/main/logo/1000x1000.png)
+![Project logo](https://raw.githubusercontent.com/ArdenHide/Utils.EnvironmentManager/main/logo/1000x1000.png)
 
 # Utils.EnvironmentManager
 
