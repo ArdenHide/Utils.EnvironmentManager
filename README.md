@@ -1,6 +1,6 @@
-# Utils.EnvironmentManager
+![Project logo](logo/1000x1000.png)
 
-![Project logo](logo/1500x500.png)
+# Utils.EnvironmentManager
 
 [![SonarCloud](https://sonarcloud.io/images/project_badges/sonarcloud-white.svg)](https://sonarcloud.io/summary/new_code?id=Utils.EnvironmentManager)
 
