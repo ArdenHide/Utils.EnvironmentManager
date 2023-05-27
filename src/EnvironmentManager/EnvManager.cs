@@ -10,21 +10,31 @@ public static class EnvManager
 
         if (string.IsNullOrEmpty(envValue))
         {
-            if (raiseException)
-            {
-                throw new InvalidOperationException($"Environment variable '{variableName}' is null or empty.");
-            }
-            else
-            {
-                Console.WriteLine($"Environment variable '{variableName}' is null or empty.");
-                return default!;
-            }
+            HandleMissingEnvironmentVariable(variableName, raiseException);
+            return default!;
         }
 
+        return ConvertEnvironmentValue<T>(variableName, envValue, raiseException);
+    }
+
+    private static void HandleMissingEnvironmentVariable(string variableName, bool raiseException)
+    {
+        string errorMessage = $"Environment variable '{variableName}' is null or empty.";
+        if (raiseException)
+        {
+            throw new InvalidOperationException(errorMessage);
+        }
+        else
+        {
+            Console.WriteLine(errorMessage);
+        }
+    }
+
+    private static T ConvertEnvironmentValue<T>(string variableName, string envValue, bool raiseException)
+    {
         try
         {
-            T convertedValue = ConvertValue<T>(envValue);
-            return convertedValue;
+            return ConvertValue<T>(envValue);
         }
         catch (Exception ex)
         {
@@ -42,36 +52,30 @@ public static class EnvManager
 
     private static T ConvertValue<T>(string value)
     {
-        var targetType = typeof(T);
+        Type targetType = typeof(T);
 
         if (targetType == typeof(DateTime))
         {
             return (T)(object)ParseDateTime(value);
         }
-        else if (IsNumericType(targetType))
+
+        if (IsNumericType(targetType))
         {
             return (T)Convert.ChangeType(value, targetType, CultureInfo.InvariantCulture);
         }
-        else
-        {
-            return (T)Convert.ChangeType(value, targetType);
-        }
+
+        return (T)Convert.ChangeType(value, targetType);
     }
 
     private static DateTime ParseDateTime(string value)
     {
-        if (DateTime.TryParse(value, out var result))
+        if (DateTime.TryParse(value, out DateTime result) ||
+            DateTime.TryParseExact(value, "yyyy-MM-ddTHH:mm:ss", CultureInfo.InvariantCulture, DateTimeStyles.None, out result))
         {
             return result;
         }
-        else if (DateTime.TryParseExact(value, "yyyy-MM-ddTHH:mm:ss", CultureInfo.InvariantCulture, DateTimeStyles.None, out result))
-        {
-            return result;
-        }
-        else
-        {
-            throw new FormatException($"Failed to parse DateTime value '{value}'.");
-        }
+
+        throw new FormatException($"Failed to parse DateTime value '{value}'.");
     }
 
     private static bool IsNumericType(Type type)
