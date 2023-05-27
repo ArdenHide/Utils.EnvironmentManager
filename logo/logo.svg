@@ -1,0 +1,18 @@
+<svg viewBox="0 0 500 400" version="1.1" id="svg_null">
+	<g id="root" stroke="none" stroke-width="1" fill="none" fill-rule="evenodd">
+		<rect id="background" fill="#FFF" x="0" y="0" width="500" height="400"></rect>
+		<g id="shape" transform="translate(149.000000, 109.000000)">
+			<polygon id="shape.secondary" fill-opacity=".02" fill="#645fce" points="85.089 99.343 85.089 79.769 94.916 89.557"></polygon>
+			<polygon id="shape.secondary" fill-opacity=".6" fill="#645fce" points="116.912 168 85.658 168 85.658 115.861 116.912 84.736"></polygon>
+			<polygon id="shape.secondary" fill-opacity=".8" fill="#645fce" points="159.455 168 128.201 168 128.201 80.341 159.455 49.217"></polygon>
+			<polygon id="shape.secondary" fill="#645fce" points="202 168 170.746 168 170.746 31.123 202 0"></polygon>
+			<polygon id="shape.secondary" fill-opacity=".4" fill="#645fce" points="74.367 127.105 74.367 168 33.301 168"></polygon>
+			<polygon id="shape.secondary" fill-opacity=".5" fill="#645fce" points="130.037 0 101 28.917 71.963 0"></polygon>
+			<polygon id="shape.primary" fill-opacity=".5" fill="#40356f" points="130.037 0 101 28.917 71.963 0"></polygon>
+			<polygon id="shape.primary" fill-opacity=".8" fill="#40356f" points="42.545 140.47 42.545 43.008 73.799 74.132 73.799 109.346"></polygon>
+			<polygon id="shape.primary" fill-opacity=".6" fill="#40356f" points="85.089 99.343 85.089 79.769 94.916 89.557"></polygon>
+			<polygon id="shape.primary" fill="#40356f" points="21.134 168 0 168 0 0 31.254 31.123 31.254 157.923"></polygon>
+			<polygon id="shape.primary" fill-opacity=".6" fill="#40356f" points="74.367 127.105 74.367 168 33.301 168"></polygon>
+		</g>
+	</g>
+</svg>
