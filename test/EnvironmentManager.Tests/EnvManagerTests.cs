@@ -7,9 +7,9 @@ public class EnvManagerTests
 {
     private readonly ITestOutputHelper output;
     private const string EnvName = "VARIABLE";
-    private string EnvNotSetErrorMessage =>
+    private static string EnvNotSetErrorMessage =>
         $"Environment variable '{EnvName}' is null or empty.";
-    private string ConvertErrorMessage(Type type) =>
+    private static string ConvertErrorMessage(Type type) =>
         $"Failed to convert environment variable '{EnvName}' to type '{type}'.";
 
     public EnvManagerTests(ITestOutputHelper output)
@@ -97,13 +97,13 @@ public class EnvManagerTests
     }
 
     [Fact]
-    public void GetEnvironmentValue_Types_Int()
+    public void GetEnvironmentValue_Types_Decimal()
     {
-        string envValue = "123456789";
-        int expected = 123456789;
+        string envValue = "1.23456789";
+        decimal expected = 1.23456789m;
         Environment.SetEnvironmentVariable(EnvName, envValue);
 
-        var result = EnvManager.GetEnvironmentValue<int>(EnvName);
+        var result = EnvManager.GetEnvironmentValue<decimal>(EnvName);
 
         Assert.Equal(expected, result);
         output.WriteLine(result.GetType().Name);
@@ -136,13 +136,104 @@ public class EnvManagerTests
     }
 
     [Fact]
-    public void GetEnvironmentValue_Types_Decimal()
+    public void GetEnvironmentValue_Types_Int()
     {
-        string envValue = "1.23456789";
-        decimal expected = 1.23456789m;
+        string envValue = "2147483647";
+        int expected = 2_147_483_647;
         Environment.SetEnvironmentVariable(EnvName, envValue);
 
-        var result = EnvManager.GetEnvironmentValue<decimal>(EnvName);
+        var result = EnvManager.GetEnvironmentValue<int>(EnvName);
+
+        Assert.Equal(expected, result);
+        output.WriteLine(result.GetType().Name);
+    }
+
+    [Fact]
+    public void GetEnvironmentValue_Types_UInt()
+    {
+        string envValue = "4294967295";
+        uint expected = 4_294_967_295;
+        Environment.SetEnvironmentVariable(EnvName, envValue);
+
+        var result = EnvManager.GetEnvironmentValue<uint>(EnvName);
+
+        Assert.Equal(expected, result);
+        output.WriteLine(result.GetType().Name);
+    }
+
+    [Fact]
+    public void GetEnvironmentValue_Types_Long()
+    {
+        string envValue = "9223372036854775807";
+        long expected = 9_223_372_036_854_775_807;
+        Environment.SetEnvironmentVariable(EnvName, envValue);
+
+        var result = EnvManager.GetEnvironmentValue<long>(EnvName);
+
+        Assert.Equal(expected, result);
+        output.WriteLine(result.GetType().Name);
+    }
+
+    [Fact]
+    public void GetEnvironmentValue_Types_ULong()
+    {
+        string envValue = "18446744073709551615";
+        ulong expected = 18_446_744_073_709_551_615;
+        Environment.SetEnvironmentVariable(EnvName, envValue);
+
+        var result = EnvManager.GetEnvironmentValue<ulong>(EnvName);
+
+        Assert.Equal(expected, result);
+        output.WriteLine(result.GetType().Name);
+    }
+
+    [Fact]
+    public void GetEnvironmentValue_Types_Short()
+    {
+        string envValue = "32767";
+        short expected = 32_767;
+        Environment.SetEnvironmentVariable(EnvName, envValue);
+
+        var result = EnvManager.GetEnvironmentValue<short>(EnvName);
+
+        Assert.Equal(expected, result);
+        output.WriteLine(result.GetType().Name);
+    }
+
+    [Fact]
+    public void GetEnvironmentValue_Types_UShort()
+    {
+        string envValue = "65535";
+        ushort expected = 65_535;
+        Environment.SetEnvironmentVariable(EnvName, envValue);
+
+        var result = EnvManager.GetEnvironmentValue<ushort>(EnvName);
+
+        Assert.Equal(expected, result);
+        output.WriteLine(result.GetType().Name);
+    }
+
+    [Fact]
+    public void GetEnvironmentValue_Types_Byte()
+    {
+        string envValue = "255";
+        byte expected = 255;
+        Environment.SetEnvironmentVariable(EnvName, envValue);
+
+        var result = EnvManager.GetEnvironmentValue<byte>(EnvName);
+
+        Assert.Equal(expected, result);
+        output.WriteLine(result.GetType().Name);
+    }
+
+    [Fact]
+    public void GetEnvironmentValue_Types_SByte()
+    {
+        string envValue = "127";
+        sbyte expected = 127;
+        Environment.SetEnvironmentVariable(EnvName, envValue);
+
+        var result = EnvManager.GetEnvironmentValue<sbyte>(EnvName);
 
         Assert.Equal(expected, result);
         output.WriteLine(result.GetType().Name);
