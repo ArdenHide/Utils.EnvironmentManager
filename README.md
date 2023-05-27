@@ -1,6 +1,6 @@
 # Utils.EnvironmentManager
 
-<img src='logo/1500x500.png' width='100%' alt="Project logo" />
+![Project logo](logo/1500x500.png)
 
 [![SonarCloud](https://sonarcloud.io/images/project_badges/sonarcloud-white.svg)](https://sonarcloud.io/summary/new_code?id=Utils.EnvironmentManager)
 
