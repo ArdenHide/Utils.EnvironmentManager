@@ -4,6 +4,13 @@ namespace EnvironmentManager;
 
 public static class EnvManager
 {
+    public static object GetEnvironmentValue(Type type, string variableName, bool raiseException = false)
+    {
+        var method = typeof(EnvManager).GetMethod(nameof(EnvManager.GetEnvironmentValue), new[] { typeof(string), typeof(bool) });
+        var genericMethod = method!.MakeGenericMethod(type);
+        return genericMethod.Invoke(null, new object[] { variableName, raiseException })!;
+    }
+
     public static T GetEnvironmentValue<T>(string variableName, bool raiseException = false)
     {
         var envValue = Environment.GetEnvironmentVariable(variableName);

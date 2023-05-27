@@ -1,3 +1,4 @@
+using System.Globalization;
 using Xunit;
 using Xunit.Abstractions;
 
@@ -70,198 +71,37 @@ public class EnvManagerTests
         Assert.Contains(ConvertErrorMessage(typeof(bool)), consoleOutput.ToString());
     }
 
-    [Fact]
-    public void GetEnvironmentValue_Types_Char()
+    [Theory]
+    [MemberData(nameof(Data))]
+    public void GetEnvironmentValue_Types(string envValue, object expected, Type type)
     {
-        string envValue = "ñ";
-        char expected = 'ñ';
         Environment.SetEnvironmentVariable(EnvName, envValue);
 
-        var result = EnvManager.GetEnvironmentValue<char>(EnvName);
+        dynamic result = EnvManager.GetEnvironmentValue(type, EnvName);
 
-        Assert.Equal(expected, result);
+        Assert.Equal(expected, (object)result);
         output.WriteLine(result.GetType().Name);
     }
 
-    [Fact]
-    public void GetEnvironmentValue_Types_String()
-    {
-        string envValue = "some string";
-        string expected = "some string";
-        Environment.SetEnvironmentVariable(EnvName, envValue);
-
-        var result = EnvManager.GetEnvironmentValue<string>(EnvName);
-
-        Assert.Equal(expected, result);
-        output.WriteLine(result.GetType().Name);
-    }
-
-    [Fact]
-    public void GetEnvironmentValue_Types_Decimal()
-    {
-        string envValue = "1.23456789";
-        decimal expected = 1.23456789m;
-        Environment.SetEnvironmentVariable(EnvName, envValue);
-
-        var result = EnvManager.GetEnvironmentValue<decimal>(EnvName);
-
-        Assert.Equal(expected, result);
-        output.WriteLine(result.GetType().Name);
-    }
-
-    [Fact]
-    public void GetEnvironmentValue_Types_Double()
-    {
-        string envValue = "1.23456789";
-        double expected = 1.23456789d;
-        Environment.SetEnvironmentVariable(EnvName, envValue);
-
-        var result = EnvManager.GetEnvironmentValue<double>(EnvName);
-
-        Assert.Equal(expected, result);
-        output.WriteLine(result.GetType().Name);
-    }
-
-    [Fact]
-    public void GetEnvironmentValue_Types_Float()
-    {
-        string envValue = "1.23456789";
-        float expected = 1.23456789f;
-        Environment.SetEnvironmentVariable(EnvName, envValue);
-
-        var result = EnvManager.GetEnvironmentValue<float>(EnvName);
-
-        Assert.Equal(expected, result);
-        output.WriteLine(result.GetType().Name);
-    }
-
-    [Fact]
-    public void GetEnvironmentValue_Types_Int()
-    {
-        string envValue = "2147483647";
-        int expected = 2_147_483_647;
-        Environment.SetEnvironmentVariable(EnvName, envValue);
-
-        var result = EnvManager.GetEnvironmentValue<int>(EnvName);
-
-        Assert.Equal(expected, result);
-        output.WriteLine(result.GetType().Name);
-    }
-
-    [Fact]
-    public void GetEnvironmentValue_Types_UInt()
-    {
-        string envValue = "4294967295";
-        uint expected = 4_294_967_295;
-        Environment.SetEnvironmentVariable(EnvName, envValue);
-
-        var result = EnvManager.GetEnvironmentValue<uint>(EnvName);
-
-        Assert.Equal(expected, result);
-        output.WriteLine(result.GetType().Name);
-    }
-
-    [Fact]
-    public void GetEnvironmentValue_Types_Long()
-    {
-        string envValue = "9223372036854775807";
-        long expected = 9_223_372_036_854_775_807;
-        Environment.SetEnvironmentVariable(EnvName, envValue);
-
-        var result = EnvManager.GetEnvironmentValue<long>(EnvName);
-
-        Assert.Equal(expected, result);
-        output.WriteLine(result.GetType().Name);
-    }
-
-    [Fact]
-    public void GetEnvironmentValue_Types_ULong()
-    {
-        string envValue = "18446744073709551615";
-        ulong expected = 18_446_744_073_709_551_615;
-        Environment.SetEnvironmentVariable(EnvName, envValue);
-
-        var result = EnvManager.GetEnvironmentValue<ulong>(EnvName);
-
-        Assert.Equal(expected, result);
-        output.WriteLine(result.GetType().Name);
-    }
-
-    [Fact]
-    public void GetEnvironmentValue_Types_Short()
-    {
-        string envValue = "32767";
-        short expected = 32_767;
-        Environment.SetEnvironmentVariable(EnvName, envValue);
-
-        var result = EnvManager.GetEnvironmentValue<short>(EnvName);
-
-        Assert.Equal(expected, result);
-        output.WriteLine(result.GetType().Name);
-    }
-
-    [Fact]
-    public void GetEnvironmentValue_Types_UShort()
-    {
-        string envValue = "65535";
-        ushort expected = 65_535;
-        Environment.SetEnvironmentVariable(EnvName, envValue);
-
-        var result = EnvManager.GetEnvironmentValue<ushort>(EnvName);
-
-        Assert.Equal(expected, result);
-        output.WriteLine(result.GetType().Name);
-    }
-
-    [Fact]
-    public void GetEnvironmentValue_Types_Byte()
-    {
-        string envValue = "255";
-        byte expected = 255;
-        Environment.SetEnvironmentVariable(EnvName, envValue);
-
-        var result = EnvManager.GetEnvironmentValue<byte>(EnvName);
-
-        Assert.Equal(expected, result);
-        output.WriteLine(result.GetType().Name);
-    }
-
-    [Fact]
-    public void GetEnvironmentValue_Types_SByte()
-    {
-        string envValue = "127";
-        sbyte expected = 127;
-        Environment.SetEnvironmentVariable(EnvName, envValue);
-
-        var result = EnvManager.GetEnvironmentValue<sbyte>(EnvName);
-
-        Assert.Equal(expected, result);
-        output.WriteLine(result.GetType().Name);
-    }
-
-    [Fact]
-    public void GetEnvironmentValue_Types_Boolean()
-    {
-        string envValue = "true";
-        bool expected = true;
-        Environment.SetEnvironmentVariable(EnvName, envValue);
-
-        var result = EnvManager.GetEnvironmentValue<bool>(EnvName);
-
-        Assert.Equal(expected, result);
-        output.WriteLine(result.GetType().Name);
-    }
-
-    [Fact]
-    public void GetEnvironmentValue_Types_DateTime()
-    {
-        string envValue = DateTime.Parse("2023-05-15T19:00:33").ToString();
-        DateTime expected = DateTime.Parse("2023-05-15T19:00:33");
-        Environment.SetEnvironmentVariable(EnvName, envValue);
-
-        var result = EnvManager.GetEnvironmentValue<DateTime>(EnvName);
-
-        Assert.Equal(expected, result);
-        output.WriteLine(result.GetType().Name);
-    }
+    public static IEnumerable<object[]> Data =>
+        new List<object[]>
+        {
+            new object[] { "ñ", 'ñ', typeof(char) },
+            new object[] { "some string", "some string", typeof(string) },
+            new object[] { "1.23456789", 1.23456789m, typeof(decimal) },
+            new object[] { "1.23456789", 1.23456789d, typeof(double) },
+            new object[] { "1.23456789", 1.23456789f, typeof(float) },
+            new object[] { "2147483647", 2147483647, typeof(int) },
+            new object[] { "4294967295", 4294967295u, typeof(uint) },
+            new object[] { "9223372036854775807", 9223372036854775807L, typeof(long) },
+            new object[] { "18446744073709551615", 18446744073709551615UL, typeof(ulong) },
+            new object[] { "32767", (short)32767, typeof(short) },
+            new object[] { "65535", (ushort)65535, typeof(ushort) },
+            new object[] { "255", (byte)255, typeof(byte) },
+            new object[] { "127", (sbyte)127, typeof(sbyte) },
+            new object[] { "true", true, typeof(bool) },
+            new object[] { "2023-05-15T19:00:33", DateTime.Parse("2023-05-15T19:00:33"), typeof(DateTime) },
+            new object[] { "2023/05/15 07:00:33 PM", DateTime.ParseExact("2023/05/15 07:00:33 PM", "yyyy/MM/dd hh:mm:ss tt", CultureInfo.InvariantCulture), typeof(DateTime) },
+            new object[] { "15.05.2023 19:00:33", DateTime.ParseExact("15.05.2023 19:00:33", "dd.MM.yyyy HH:mm:ss", CultureInfo.InvariantCulture), typeof(DateTime) }
+        };
 }
