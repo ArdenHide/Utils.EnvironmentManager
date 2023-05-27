@@ -7,9 +7,9 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "src", "src", "{448A514A-EC6
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "test", "test", "{B8E29199-6F18-449F-AB15-B1CBC89541DB}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "EnvironmentManager", "src\EnvironmentManager\EnvironmentManager.csproj", "{9AAE2122-4138-4088-9738-06E7A9EFD9DE}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "EnvironmentManager", "src\EnvironmentManager\EnvironmentManager.csproj", "{9AAE2122-4138-4088-9738-06E7A9EFD9DE}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "EnvironmentManager.Tests", "test\EnvironmentManager.Tests\EnvironmentManager.Tests.csproj", "{6C2536B0-4039-4E0E-A828-1553D2D0024D}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "EnvironmentManager.Tests", "test\EnvironmentManager.Tests\EnvironmentManager.Tests.csproj", "{6C2536B0-4039-4E0E-A828-1553D2D0024D}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
