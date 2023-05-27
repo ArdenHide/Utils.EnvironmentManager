@@ -1,3 +1,5 @@
+![Project logo](logo/1000x1000.png)
+
 # Utils.EnvironmentManager
 
 [![SonarCloud](https://sonarcloud.io/images/project_badges/sonarcloud-white.svg)](https://sonarcloud.io/summary/new_code?id=Utils.EnvironmentManager)
@@ -9,7 +11,7 @@
 [![NuGet version](https://badge.fury.io/nu/Utils.EnvironmentManager.svg)](https://badge.fury.io/nu/Utils.EnvironmentManager)
 [![License](https://img.shields.io/badge/License-MIT-yellow.svg)](https://github.com/ArdenHide/Utils.EnvironmentManager/blob/main/LICENSE)
 
-<hr>
+---
 
 The `EnvironmentManager` namespace provides a static class `EnvManager` that allows you to easily retrieve environment variable values and handle conversions to the desired data type.
 
