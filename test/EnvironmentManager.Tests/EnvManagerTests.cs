@@ -1,7 +1,6 @@
-using Newtonsoft.Json.Linq;
-using System.Globalization;
 using Xunit;
 using Xunit.Abstractions;
+using System.Globalization;
 
 namespace EnvironmentManager.Tests;
 
@@ -13,6 +12,9 @@ public class EnvManagerTests
         $"Environment variable '{EnvName}' is null or empty.";
     private static string ConvertErrorMessage(Type type) =>
         $"Failed to convert environment variable '{EnvName}' to type '{type}'.";
+
+    private static string ParseErrorMessage(Type type, string value) =>
+        $"Failed to parse {type.Name} value '{value}'.";
 
     public EnvManagerTests(ITestOutputHelper output)
     {
@@ -82,7 +84,20 @@ public class EnvManagerTests
         var exception = Assert.Throws<InvalidCastException>(testCode);
         Assert.Equal(ConvertErrorMessage(typeof(DateTime)), exception.Message);
         var innerException = Assert.IsType<FormatException>(exception.InnerException);
-        Assert.Equal($"Failed to parse DateTime value '2023|05|28T19:53:00'.", innerException.Message);
+        Assert.Equal(ParseErrorMessage(typeof(DateTime), "2023|05|28T19:53:00"), innerException.Message);
+    }
+
+    [Fact]
+    public void GetEnvironmentValue_UnsupportedTimeSpanFormat_ThrowException()
+    {
+        Environment.SetEnvironmentVariable(EnvName, "19|53|00");
+
+        Action testCode = () => EnvManager.GetEnvironmentValue<TimeSpan>(EnvName, true);
+
+        var exception = Assert.Throws<InvalidCastException>(testCode);
+        Assert.Equal(ConvertErrorMessage(typeof(TimeSpan)), exception.Message);
+        var innerException = Assert.IsType<FormatException>(exception.InnerException);
+        Assert.Equal(ParseErrorMessage(typeof(TimeSpan), "19|53|00"), innerException.Message);
     }
 
     [Theory]
@@ -118,6 +133,10 @@ public class EnvManagerTests
             new object[] { "2023/05/15 07:00:33 PM", DateTime.ParseExact("2023/05/15 07:00:33 PM", "yyyy/MM/dd hh:mm:ss tt", CultureInfo.InvariantCulture), typeof(DateTime) },
             new object[] { "15.05.2023 19:00:33", DateTime.ParseExact("15.05.2023 19:00:33", "dd.MM.yyyy HH:mm:ss", CultureInfo.InvariantCulture), typeof(DateTime) },
             new object[] { "Value2", MyEnum.Value2, typeof(MyEnum) },
+            new object[] { "1.23:45:56.789", TimeSpan.Parse("1.23:45:56.789"), typeof(TimeSpan) },
+            new object[] { "23:45:56", TimeSpan.Parse("23:45:56"), typeof(TimeSpan) },
+            new object[] { "23:45:56", TimeSpan.Parse("23:45:56"), typeof(TimeSpan) },
+            new object[] { "1.23:45:56", TimeSpan.Parse("1.23:45:56"), typeof(TimeSpan) },
         };
 
     public enum MyEnum

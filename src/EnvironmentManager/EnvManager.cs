@@ -66,6 +66,11 @@ public static class EnvManager
             return (T)Enum.Parse(targetType, value, ignoreCase: true);
         }
 
+        if (targetType == typeof(TimeSpan))
+        {
+            return (T)(object)ParseTimeSpan(value);
+        }
+
         if (targetType == typeof(DateTime))
         {
             return (T)(object)ParseDateTime(value);
@@ -107,6 +112,16 @@ public static class EnvManager
         }
 
         throw new FormatException($"Failed to parse DateTime value '{value}'.");
+    }
+
+    private static TimeSpan ParseTimeSpan(string value)
+    {
+        if (TimeSpan.TryParse(value, out TimeSpan result))
+        {
+            return result;
+        }
+
+        throw new FormatException($"Failed to parse TimeSpan value '{value}'.");
     }
 
     private static bool IsNumericType(Type type)
