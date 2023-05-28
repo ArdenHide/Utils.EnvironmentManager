@@ -4,6 +4,13 @@ namespace EnvironmentManager;
 
 public static class EnvManager
 {
+    public static object GetEnvironmentValue(Type type, string variableName, bool raiseException = false)
+    {
+        var method = typeof(EnvManager).GetMethod(nameof(EnvManager.GetEnvironmentValue), new[] { typeof(string), typeof(bool) });
+        var genericMethod = method!.MakeGenericMethod(type);
+        return genericMethod.Invoke(null, new object[] { variableName, raiseException })!;
+    }
+
     public static T GetEnvironmentValue<T>(string variableName, bool raiseException = false)
     {
         var envValue = Environment.GetEnvironmentVariable(variableName);
@@ -69,8 +76,27 @@ public static class EnvManager
 
     private static DateTime ParseDateTime(string value)
     {
+        string[] formats = new string[]
+        {
+            "yyyy-MM-ddTHH:mm:ss",
+            "dd.MM.yyyy HH:mm:ss",
+            "MM/dd/yyyy HH:mm:ss",
+            "dd/MM/yyyy HH:mm:ss",
+            "yyyy-MM-dd",
+            "dd.MM.yyyy",
+            "MM/dd/yyyy",
+            "dd/MM/yyyy",
+            "HH:mm:ss",
+            "yyyy-MM-dd HH:mm:ss.fffffff",
+            "yyyy-MM-dd HH:mm:ss.FFF",
+            "yyyy/MM/dd HH:mm:ss",
+            "yyyyMMddHHmmss",
+            "yyyy-MM-ddTHH:mm:ssZ",
+            "yyyyMMdd"
+        };
+
         if (DateTime.TryParse(value, out DateTime result) ||
-            DateTime.TryParseExact(value, "yyyy-MM-ddTHH:mm:ss", CultureInfo.InvariantCulture, DateTimeStyles.None, out result))
+            DateTime.TryParseExact(value, formats, CultureInfo.InvariantCulture, DateTimeStyles.None, out result))
         {
             return result;
         }
