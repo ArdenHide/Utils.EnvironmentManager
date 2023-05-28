@@ -1,3 +1,4 @@
+using Newtonsoft.Json.Linq;
 using System.Globalization;
 using Xunit;
 using Xunit.Abstractions;
@@ -69,6 +70,19 @@ public class EnvManagerTests
 
         Assert.Equal(default, result);
         Assert.Contains(ConvertErrorMessage(typeof(bool)), consoleOutput.ToString());
+    }
+
+    [Fact]
+    public void GetEnvironmentValue_UnsupportedDateTimeFormat_ThrowException()
+    {
+        Environment.SetEnvironmentVariable(EnvName, "2023|05|28T19:53:00");
+
+        Action testCode = () => EnvManager.GetEnvironmentValue<DateTime>(EnvName, true);
+
+        var exception = Assert.Throws<InvalidCastException>(testCode);
+        Assert.Equal(ConvertErrorMessage(typeof(DateTime)), exception.Message);
+        var innerException = Assert.IsType<FormatException>(exception.InnerException);
+        Assert.Equal($"Failed to parse DateTime value '2023|05|28T19:53:00'.", innerException.Message);
     }
 
     [Theory]
