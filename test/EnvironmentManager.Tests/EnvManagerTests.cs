@@ -118,6 +118,10 @@ public class EnvManagerTests
             new object[] { "2023/05/15 07:00:33 PM", DateTime.ParseExact("2023/05/15 07:00:33 PM", "yyyy/MM/dd hh:mm:ss tt", CultureInfo.InvariantCulture), typeof(DateTime) },
             new object[] { "15.05.2023 19:00:33", DateTime.ParseExact("15.05.2023 19:00:33", "dd.MM.yyyy HH:mm:ss", CultureInfo.InvariantCulture), typeof(DateTime) },
             new object[] { "Value2", MyEnum.Value2, typeof(MyEnum) },
+            new object[] { "1.23:45:56.789", TimeSpan.Parse("1.23:45:56.789"), typeof(TimeSpan) },
+            new object[] { "23:45:56", TimeSpan.Parse("23:45:56"), typeof(TimeSpan) },
+            new object[] { "23:45:56", TimeSpan.Parse("23:45:56"), typeof(TimeSpan) },
+            new object[] { "1.23:45:56", TimeSpan.Parse("1.23:45:56"), typeof(TimeSpan) },
         };
 
     public enum MyEnum
