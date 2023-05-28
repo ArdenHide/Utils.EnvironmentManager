@@ -116,6 +116,13 @@ public class EnvManagerTests
             new object[] { "true", true, typeof(bool) },
             new object[] { "2023-05-15T19:00:33", DateTime.Parse("2023-05-15T19:00:33"), typeof(DateTime) },
             new object[] { "2023/05/15 07:00:33 PM", DateTime.ParseExact("2023/05/15 07:00:33 PM", "yyyy/MM/dd hh:mm:ss tt", CultureInfo.InvariantCulture), typeof(DateTime) },
-            new object[] { "15.05.2023 19:00:33", DateTime.ParseExact("15.05.2023 19:00:33", "dd.MM.yyyy HH:mm:ss", CultureInfo.InvariantCulture), typeof(DateTime) }
+            new object[] { "15.05.2023 19:00:33", DateTime.ParseExact("15.05.2023 19:00:33", "dd.MM.yyyy HH:mm:ss", CultureInfo.InvariantCulture), typeof(DateTime) },
+            new object[] { "Value2", MyEnum.Value2, typeof(MyEnum) },
         };
+
+    public enum MyEnum
+    {
+        Value1,
+        Value2
+    }
 }

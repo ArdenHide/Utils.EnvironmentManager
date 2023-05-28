@@ -61,6 +61,11 @@ public static class EnvManager
     {
         Type targetType = typeof(T);
 
+        if (targetType.IsEnum)
+        {
+            return (T)Enum.Parse(targetType, value, ignoreCase: true);
+        }
+
         if (targetType == typeof(DateTime))
         {
             return (T)(object)ParseDateTime(value);
