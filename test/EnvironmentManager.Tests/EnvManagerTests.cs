@@ -100,6 +100,17 @@ public class EnvManagerTests
         Assert.Equal(ParseErrorMessage(typeof(TimeSpan), "19|53|00"), innerException.Message);
     }
 
+    [Fact]
+    public void AddCustomDateTimeFormat_ExpectedDateTime()
+    {
+        Environment.SetEnvironmentVariable(EnvName, "2023*05*28T19:53:00");
+        EnvManager.AddCustomDateTimeFormat("yyyy*MM*ddTHH:mm:ss");
+
+        var result = EnvManager.GetEnvironmentValue<DateTime>(EnvName, true);
+
+        Assert.Equal(DateTime.Parse("2023.05.28T19:53:00"), result);
+    }
+
     [Theory]
     [MemberData(nameof(Data))]
     public void GetEnvironmentValue_Types(string envValue, object expected, Type type)
