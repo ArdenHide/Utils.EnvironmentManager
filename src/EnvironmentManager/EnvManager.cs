@@ -4,6 +4,13 @@ namespace EnvironmentManager;
 
 public static class EnvManager
 {
+    private static List<string> customDateTimeFormats = new();
+
+    public static void AddCustomDateTimeFormat(string format)
+    {
+        customDateTimeFormats.Add(format);
+    }
+
     public static object GetEnvironmentValue(Type type, string variableName, bool raiseException = false)
     {
         var method = typeof(EnvManager).GetMethod(nameof(EnvManager.GetEnvironmentValue), new[] { typeof(string), typeof(bool) });
@@ -86,7 +93,7 @@ public static class EnvManager
 
     private static DateTime ParseDateTime(string value)
     {
-        string[] formats = new string[]
+        var formats = new List<string>
         {
             "yyyy-MM-ddTHH:mm:ss",
             "dd.MM.yyyy HH:mm:ss",
@@ -104,9 +111,10 @@ public static class EnvManager
             "yyyy-MM-ddTHH:mm:ssZ",
             "yyyyMMdd"
         };
+        formats.AddRange(customDateTimeFormats);
 
         if (DateTime.TryParse(value, out DateTime result) ||
-            DateTime.TryParseExact(value, formats, CultureInfo.InvariantCulture, DateTimeStyles.None, out result))
+            DateTime.TryParseExact(value, formats.ToArray(), CultureInfo.InvariantCulture, DateTimeStyles.None, out result))
         {
             return result;
         }
