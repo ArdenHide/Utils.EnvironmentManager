@@ -95,3 +95,33 @@ In the example above, the `GetEnvironmentValue` method is used to retrieve the v
 For the `DateTime` conversion, the method supports various date and time formats. If the value of the environment variable is not in a valid format, a `FormatException` will be thrown. Make sure to set the appropriate date and time format for the `DATE_FORMAT` environment variable.
 
 Note: If the conversion fails, the method either raises an exception (if `raiseException` is `true`) or returns the default value for the specified type.
+
+**Method: AddCustomDateTimeFormat**
+
+```csharp
+public static void AddCustomDateTimeFormat(string format)
+```
+
+This method allows you to add a custom date and time format that the `GetEnvironmentValue<DateTime>` method will recognize when attempting to parse a `DateTime` from an environment variable's value.
+
+The `DateTime` parsing process attempts to match the environment variable's value with the formats specified in the `formats` array, which includes a predefined set of common date and time formats.
+By using the `AddCustomDateTimeFormat` method, you can add your own formats to this list.
+
+**Parameters:**
+- `format` (string): The custom date and time format to be added.
+
+**Example:**
+
+```csharp
+// Add a custom date and time format
+EnvManager.AddCustomDateTimeFormat("dd-MMM-yyyy HH:mm");
+
+// Retrieve the value of the "CUSTOM_DATE_FORMAT" environment variable as a DateTime using the newly added format
+// Environment value: 14-Jun-2023 14:30
+object customDateFormat = EnvManager.GetEnvironmentValue<DateTime>("CUSTOM_DATE_FORMAT");
+Console.WriteLine($"Custom Date Format: {customDateFormat.ToString()}");
+```
+
+In the example above, the `AddCustomDateTimeFormat` method is used to add a new date and time format.
+Then the `GetEnvironmentValue` method is used to retrieve the value of the "CUSTOM_DATE_FORMAT" environment variable.
+The method recognizes the newly added format and successfully converts the environment variable's value to a `DateTime` object.
