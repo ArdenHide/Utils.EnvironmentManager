@@ -96,7 +96,7 @@ For the `DateTime` conversion, the method supports various date and time formats
 
 Note: If the conversion fails, the method either raises an exception (if `raiseException` is `true`) or returns the default value for the specified type.
 
-**Method: AddCustomDateTimeFormat**
+**Method: `AddCustomDateTimeFormat`**
 
 ```csharp
 public static void AddCustomDateTimeFormat(string format)
