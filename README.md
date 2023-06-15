@@ -19,8 +19,35 @@ The `EnvironmentManager` namespace provides a static class `EnvManager` that all
 
 The `EnvManager` class provides methods for retrieving environment variable values and handling conversions.
 
-**Method:** `GetEnvironmentValue<T>`
+**Supported Types:**
 
+- Primitive Types: `int`, `uint`, `long`, `ulong`, `short`, `ushort`, `byte`, `sbyte`, `decimal`, `double`, `float`, `bool`, `char`, `string`.
+- Enum Types: Any enumeration type.
+- DateTime Types: `DateTime`
+- TimeSpan Types: `TimeSpan`
+
+If the specified type is not supported, a `NotSupportedException` will be thrown.
+
+**Method:** `GetEnvironmentValue`
+```csharp
+public static object GetEnvironmentValue(Type type, string variableName, bool raiseException = false)
+```
+
+This method retrieves the value of the specified environment variable and converts it to the specified `Type`.
+The variable's value is fetched and then the appropriate type-specific `GetEnvironmentValue<T>` method is invoked dynamically using reflection.
+
+This method is particularly useful when the type of the environment variable is determined at runtime.
+
+**Parameters:**
+- `type` (Type): The type to which the environment variable's value should be converted.
+- `variableName` (string): The name of the environment variable.
+- `raiseException` (bool, optional): Specifies whether to raise an exception when the environment variable is null or empty or when the conversion fails. Defaults to `false`.
+
+**Returns:**
+- `object`: The converted value of the environment variable.
+
+
+**Method:** `GetEnvironmentValue<T>`
 ```csharp
 public static T GetEnvironmentValue<T>(string variableName, bool raiseException = false)
 ```
@@ -28,12 +55,10 @@ public static T GetEnvironmentValue<T>(string variableName, bool raiseException 
 This method retrieves the value of the specified environment variable and converts it to the specified type `T`. When working with decimal values, ensure that the decimal separator is a dot (.), not a comma (,). For example, use `1.23456789` instead of `1,23456789`.
 
 **Parameters:**
-
 - `variableName` (string): The name of the environment variable.
 - `raiseException` (bool, optional): Specifies whether to raise an exception when the environment variable is null or empty or when the conversion fails. Defaults to `false`.
 
 **Returns:**
-
 - `T`: The converted value of the environment variable.
 
 **Example:**
