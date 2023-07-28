@@ -17,7 +17,7 @@
     <PackageTags>Environment</PackageTags>
     <PackageLicenseFile>LICENSE</PackageLicenseFile>
     <PackageProjectUrl>www.nuget.org/packages/Utils.EnvironmentManager/latest</PackageProjectUrl>
-    <PackageIcon>128x128_nuget.png</PackageIcon>
+    <PackageIcon>128x128_nuget_transparent.png</PackageIcon>
     <PackageReleaseNotes>- Added support for DateTime, TimeSpan and Enum.
 - Added the ability for the user to add their own DateTime format.</PackageReleaseNotes>
   </PropertyGroup>
@@ -27,7 +27,7 @@
       <Pack>True</Pack>
       <PackagePath>\</PackagePath>
     </None>
-    <None Include="..\..\logo\128x128_nuget.png">
+    <None Include="..\..\logo\128x128_nuget_transparent.png">
       <Pack>True</Pack>
       <PackagePath>\</PackagePath>
     </None>
