@@ -1,18 +1,22 @@
 ﻿using AutoMapper;
+using Microsoft.Extensions.Logging;
+using Microsoft.Extensions.Logging.Abstractions;
 
 namespace EnvironmentManager;
 
 public class EnvManager
 {
     private readonly IMapper mapper;
+    private readonly ILogger<EnvManager> logger;
 
-    public EnvManager(IConfigurationProvider config)
+    public EnvManager(IConfigurationProvider config, ILogger<EnvManager>? logger = null)
     {
         mapper = new Mapper(config);
+        this.logger = logger ?? NullLogger<EnvManager>.Instance;
     }
 
-    public static EnvManager CreateWithDefaultConfiguration() =>
-        new(new EnvManagerMappingConfigurator().Build());
+    public static EnvManager CreateWithDefaultConfiguration(ILogger<EnvManager>? logger = null) =>
+        new(new EnvManagerMappingConfigurator().Build(), logger);
 
     public object GetEnvironmentValue(Type type, string variableName, bool raiseException = false)
     {
@@ -30,19 +34,14 @@ public class EnvManager
             return ConvertEnvironmentValue<T>(variableName, envValue, raiseException);
         }
 
-        HandleMissingEnvironmentVariable(variableName, raiseException);
-        return default!;
-    }
-
-    private static void HandleMissingEnvironmentVariable(string variableName, bool raiseException)
-    {
-        var errorMessage = $"Environment variable '{variableName}' is null or empty.";
         if (raiseException)
         {
-            throw new InvalidOperationException(errorMessage);
+            throw new InvalidOperationException($"Environment variable '{variableName}' is null or empty.");
         }
 
-        Console.WriteLine(errorMessage);
+        logger.LogWarning("Environment variable '{VariableName}' is null or empty.", variableName);
+
+        return default!;
     }
 
     private T ConvertEnvironmentValue<T>(string variableName, string envValue, bool raiseException)
@@ -58,7 +57,7 @@ public class EnvManager
                 throw new InvalidCastException($"Failed to convert environment variable '{variableName}' to type '{typeof(T)}'.", ex);
             }
 
-            Console.WriteLine($"Failed to convert environment variable '{variableName}' to type '{typeof(T)}'. Returning default value.");
+            logger.LogError("Failed to convert environment variable '{VariableName}' to type '{Type}'. Returning default value.", variableName, typeof(T));
             return default!;
         }
     }

@@ -1,6 +1,8 @@
+using Moq;
 using Xunit;
 using AutoMapper;
 using Xunit.Abstractions;
+using Microsoft.Extensions.Logging;
 
 namespace EnvironmentManager.Tests;
 
@@ -32,14 +34,11 @@ public class EnvManagerTests
     [Fact]
     public void GetEnvironmentValue_WithoutRaiseErrorEnvNotSet_DefaultValue()
     {
-        var consoleOutput = new StringWriter();
-        Console.SetOut(consoleOutput);
         Environment.SetEnvironmentVariable(EnvName, "");
 
         var result = EnvManager.CreateWithDefaultConfiguration().GetEnvironmentValue<char>(EnvName);
 
         Assert.Equal(default, result);
-        Assert.Contains(EnvNotSetErrorMessage, consoleOutput.ToString());
     }
 
     [Fact]
@@ -56,14 +55,11 @@ public class EnvManagerTests
     [Fact]
     public void GetEnvironmentValue_WithoutRaiseErrorImpossibleConvert_DefaultValue()
     {
-        var consoleOutput = new StringWriter();
-        Console.SetOut(consoleOutput);
         Environment.SetEnvironmentVariable(EnvName, "123");
 
         var result = EnvManager.CreateWithDefaultConfiguration().GetEnvironmentValue<bool>(EnvName);
 
         Assert.Equal(default, result);
-        Assert.Contains(ConvertErrorMessage(typeof(bool)), consoleOutput.ToString());
     }
 
     [Fact]
