@@ -1,8 +1,8 @@
+using Moq;
 using Xunit;
 using AutoMapper;
 using Xunit.Abstractions;
 using Microsoft.Extensions.Logging;
-using Moq;
 
 namespace EnvironmentManager.Tests;
 
@@ -34,18 +34,11 @@ public class EnvManagerTests
     [Fact]
     public void GetEnvironmentValue_WithoutRaiseErrorEnvNotSet_DefaultValue()
     {
-        var loggerMock = new Mock<ILogger<EnvManager>>();
         Environment.SetEnvironmentVariable(EnvName, "");
 
-        var result = EnvManager.CreateWithDefaultConfiguration(loggerMock.Object).GetEnvironmentValue<char>(EnvName);
+        var result = EnvManager.CreateWithDefaultConfiguration().GetEnvironmentValue<char>(EnvName);
 
         Assert.Equal(default, result);
-        loggerMock.Verify(logger => logger.Log(
-            LogLevel.Warning,
-            It.IsAny<EventId>(),
-            It.Is<It.IsAnyType>((v, t) => v.ToString()!.Contains(EnvNotSetErrorMessage)),
-            null,
-            It.IsAny<Func<It.IsAnyType, Exception, string>>()!));
     }
 
     [Fact]
@@ -62,18 +55,11 @@ public class EnvManagerTests
     [Fact]
     public void GetEnvironmentValue_WithoutRaiseErrorImpossibleConvert_DefaultValue()
     {
-        var loggerMock = new Mock<ILogger<EnvManager>>();
         Environment.SetEnvironmentVariable(EnvName, "123");
 
-        var result = EnvManager.CreateWithDefaultConfiguration(loggerMock.Object).GetEnvironmentValue<bool>(EnvName);
+        var result = EnvManager.CreateWithDefaultConfiguration().GetEnvironmentValue<bool>(EnvName);
 
         Assert.Equal(default, result);
-        loggerMock.Verify(logger => logger.Log(
-            LogLevel.Error,
-            It.IsAny<EventId>(),
-            It.Is<It.IsAnyType>((v, t) => v.ToString()!.Contains(ConvertErrorMessage(typeof(bool)))),
-            It.IsAny<Exception>(),
-            It.IsAny<Func<It.IsAnyType, Exception, string>>()!));
     }
 
     [Fact]

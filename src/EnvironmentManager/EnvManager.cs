@@ -1,17 +1,18 @@
 ﻿using AutoMapper;
 using Microsoft.Extensions.Logging;
+using Microsoft.Extensions.Logging.Abstractions;
 
 namespace EnvironmentManager;
 
 public class EnvManager
 {
     private readonly IMapper mapper;
-    private readonly ILogger? logger;
+    private readonly ILogger<EnvManager> logger;
 
-    public EnvManager(IConfigurationProvider config, ILogger? logger = null)
+    public EnvManager(IConfigurationProvider config, ILogger<EnvManager>? logger = null)
     {
         mapper = new Mapper(config);
-        this.logger = logger;
+        this.logger = logger ?? NullLogger<EnvManager>.Instance;
     }
 
     public static EnvManager CreateWithDefaultConfiguration(ILogger<EnvManager>? logger = null) =>
@@ -38,7 +39,7 @@ public class EnvManager
             throw new InvalidOperationException($"Environment variable '{variableName}' is null or empty.");
         }
 
-        logger?.LogWarning("Environment variable '{VariableName}' is null or empty.", variableName);
+        logger.LogWarning("Environment variable '{VariableName}' is null or empty.", variableName);
 
         return default!;
     }
@@ -56,7 +57,7 @@ public class EnvManager
                 throw new InvalidCastException($"Failed to convert environment variable '{variableName}' to type '{typeof(T)}'.", ex);
             }
 
-            logger?.LogError("Failed to convert environment variable '{VariableName}' to type '{Type}'. Returning default value.", variableName, typeof(T));
+            logger.LogError("Failed to convert environment variable '{VariableName}' to type '{Type}'. Returning default value.", variableName, typeof(T));
             return default!;
         }
     }
