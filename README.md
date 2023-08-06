@@ -16,8 +16,8 @@
 The `EnvironmentManager` namespace now provides a class `EnvManager` that uses `AutoMapper` package, for retrieving environment variable values and performing type conversions.
 
 > **Note**
-> This documentation assumes a basic understanding of AutoMapper.
-> AutoMapper [docs](https://github.com/AutoMapper/AutoMapper/tree/v12.0.1#readme)
+> This documentation assumes a basic understanding of `AutoMapper` library.
+> [AutoMapper docs](https://github.com/AutoMapper/AutoMapper/tree/v12.0.1#readme)
 
 ## Initialization
 
