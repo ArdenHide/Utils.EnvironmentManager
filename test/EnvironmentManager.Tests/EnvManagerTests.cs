@@ -23,7 +23,7 @@ public class EnvManagerTests
     {
         Environment.SetEnvironmentVariable(EnvName, "");
 
-        static void testCode() => new EnvManager().GetEnvironmentValue<string>(EnvName, true);
+        static void testCode() => EnvManager.CreateWithDefaultConfiguration().GetEnvironmentValue<string>(EnvName, true);
 
         var exception = Assert.Throws<InvalidOperationException>(testCode);
         Assert.Equal(EnvNotSetErrorMessage, exception.Message);
@@ -36,7 +36,7 @@ public class EnvManagerTests
         Console.SetOut(consoleOutput);
         Environment.SetEnvironmentVariable(EnvName, "");
 
-        var result = new EnvManager().GetEnvironmentValue<char>(EnvName);
+        var result = EnvManager.CreateWithDefaultConfiguration().GetEnvironmentValue<char>(EnvName);
 
         Assert.Equal(default, result);
         Assert.Contains(EnvNotSetErrorMessage, consoleOutput.ToString());
@@ -47,7 +47,7 @@ public class EnvManagerTests
     {
         Environment.SetEnvironmentVariable(EnvName, "123");
 
-        static void testCode() => new EnvManager().GetEnvironmentValue<bool>(EnvName, true);
+        static void testCode() => EnvManager.CreateWithDefaultConfiguration().GetEnvironmentValue<bool>(EnvName, true);
 
         var exception = Assert.Throws<InvalidCastException>(testCode);
         Assert.Equal(ConvertErrorMessage(typeof(bool)), exception.Message);
@@ -60,7 +60,7 @@ public class EnvManagerTests
         Console.SetOut(consoleOutput);
         Environment.SetEnvironmentVariable(EnvName, "123");
 
-        var result = new EnvManager().GetEnvironmentValue<bool>(EnvName);
+        var result = EnvManager.CreateWithDefaultConfiguration().GetEnvironmentValue<bool>(EnvName);
 
         Assert.Equal(default, result);
         Assert.Contains(ConvertErrorMessage(typeof(bool)), consoleOutput.ToString());
@@ -71,7 +71,7 @@ public class EnvManagerTests
     {
         Environment.SetEnvironmentVariable(EnvName, "19|53|00");
 
-        static void testCode() => new EnvManager().GetEnvironmentValue<TimeSpan>(EnvName, true);
+        static void testCode() => EnvManager.CreateWithDefaultConfiguration().GetEnvironmentValue<TimeSpan>(EnvName, true);
 
         var exception = Assert.Throws<InvalidCastException>(testCode);
         Assert.Equal(ConvertErrorMessage(typeof(TimeSpan)), exception.Message);
@@ -86,7 +86,7 @@ public class EnvManagerTests
     {
         Environment.SetEnvironmentVariable(EnvName, envValue);
 
-        dynamic result = new EnvManager().GetEnvironmentValue(type, EnvName);
+        dynamic result = EnvManager.CreateWithDefaultConfiguration().GetEnvironmentValue(type, EnvName);
 
         Assert.Equal(expected, (object)result);
         output.WriteLine(result.GetType().Name);
@@ -96,10 +96,11 @@ public class EnvManagerTests
     public void GetEnvironmentValue_AddNewFormat()
     {
         Environment.SetEnvironmentVariable(EnvName, "Value2");
-        var envManager = new EnvManager(EnvManager.CreateDefaultMapperConfiguration(
-            cfg => cfg.CreateMap<string, MyEnumeration>()
-                .ConvertUsing(x => Enum.Parse<MyEnumeration>(x, true))
-        ));
+
+        var mappingConfig = new EnvManagerMappingConfigurator()
+            .CreateMapFor(x => Enum.Parse<MyEnumeration>(x, true))
+            .Build();
+        var envManager = new EnvManager(mappingConfig);
 
         var result = envManager.GetEnvironmentValue<MyEnumeration>(EnvName);
 

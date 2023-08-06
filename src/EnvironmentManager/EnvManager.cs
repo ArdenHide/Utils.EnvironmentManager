@@ -1,5 +1,4 @@
 ﻿using AutoMapper;
-using System.Linq.Expressions;
 
 namespace EnvironmentManager;
 
@@ -7,41 +6,13 @@ public class EnvManager
 {
     private readonly IMapper mapper;
 
-    public EnvManager()
-        : this(CreateDefaultMapperConfiguration())
-    { }
-
-    public EnvManager(IConfigurationProvider mapperConfiguration)
+    public EnvManager(IConfigurationProvider config)
     {
-        mapper = new Mapper(mapperConfiguration);
+        mapper = new Mapper(config);
     }
 
-    public static MapperConfiguration CreateDefaultMapperConfiguration(params ConfigurationAction[] additionalConfigs)
-    {
-        return new MapperConfiguration(cfg =>
-        {
-            CreateMapFor(cfg, x => x);
-            CreateMapFor(cfg, x => decimal.Parse(x));
-            CreateMapFor(cfg, x => double.Parse(x));
-            CreateMapFor(cfg, x => float.Parse(x));
-            CreateMapFor(cfg, x => int.Parse(x));
-            CreateMapFor(cfg, x => uint.Parse(x));
-            CreateMapFor(cfg, x => long.Parse(x));
-            CreateMapFor(cfg, x => ulong.Parse(x));
-            CreateMapFor(cfg, x => short.Parse(x));
-            CreateMapFor(cfg, x => ushort.Parse(x));
-            CreateMapFor(cfg, x => byte.Parse(x));
-            CreateMapFor(cfg, x => sbyte.Parse(x));
-
-            foreach (var additionalConfig in additionalConfigs)
-            {
-                additionalConfig(cfg);
-            }
-        });
-    }
-
-    public static void CreateMapFor<T>(IProfileExpression cfg, Expression<Func<string, T>> conversionExpression) =>
-        cfg.CreateMap<string, T>().ConvertUsing(conversionExpression);
+    public static EnvManager CreateWithDefaultConfiguration() =>
+        new(new EnvManagerMappingConfigurator().Build());
 
     public object GetEnvironmentValue(Type type, string variableName, bool raiseException = false)
     {
