@@ -33,18 +33,14 @@ public class EnvManager
             return ConvertEnvironmentValue<T>(variableName, envValue, raiseException);
         }
 
-        HandleMissingEnvironmentVariable(variableName, raiseException);
-        return default!;
-    }
-
-    private void HandleMissingEnvironmentVariable(string variableName, bool raiseException)
-    {
         if (raiseException)
         {
             throw new InvalidOperationException($"Environment variable '{variableName}' is null or empty.");
         }
 
         logger?.LogWarning("Environment variable '{VariableName}' is null or empty.", variableName);
+
+        return default!;
     }
 
     private T ConvertEnvironmentValue<T>(string variableName, string envValue, bool raiseException)
