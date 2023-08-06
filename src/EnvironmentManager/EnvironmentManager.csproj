@@ -6,7 +6,7 @@
     <Nullable>enable</Nullable>
     <PackageId>Utils.EnvironmentManager</PackageId>
     <Title>Manager for working with environment variables in .NET</Title>
-    <Version>1.1.0</Version>
+    <Version>2.0.0</Version>
     <Authors>ArdenHide</Authors>
     <Company>ArdenHide</Company>
     <Product>Utils.EnvironmentManager</Product>
@@ -18,8 +18,8 @@
     <PackageLicenseFile>LICENSE</PackageLicenseFile>
     <PackageProjectUrl>www.nuget.org/packages/Utils.EnvironmentManager/latest</PackageProjectUrl>
     <PackageIcon>128x128_nuget_transparent.png</PackageIcon>
-    <PackageReleaseNotes>- Added support for DateTime, TimeSpan and Enum.
-- Added the ability for the user to add their own DateTime format.</PackageReleaseNotes>
+    <PackageReleaseNotes>- Made EnvManager non-static.
+- Included AutoMapper library for type conversion.</PackageReleaseNotes>
   </PropertyGroup>
 
   <ItemGroup>
