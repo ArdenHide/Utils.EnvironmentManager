@@ -32,7 +32,6 @@ public class EnvManager
 
         HandleMissingEnvironmentVariable(variableName, raiseException);
         return default!;
-
     }
 
     private static void HandleMissingEnvironmentVariable(string variableName, bool raiseException)
