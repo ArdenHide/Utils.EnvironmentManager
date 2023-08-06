@@ -1,6 +1,6 @@
 using Xunit;
+using AutoMapper;
 using Xunit.Abstractions;
-using System.Globalization;
 
 namespace EnvironmentManager.Tests;
 
@@ -8,13 +8,10 @@ public class EnvManagerTests
 {
     private readonly ITestOutputHelper output;
     private const string EnvName = "VARIABLE";
-    private static string EnvNotSetErrorMessage =>
-        $"Environment variable '{EnvName}' is null or empty.";
-    private static string ConvertErrorMessage(Type type) =>
-        $"Failed to convert environment variable '{EnvName}' to type '{type}'.";
-
-    private static string ParseErrorMessage(Type type, string value) =>
-        $"Failed to parse {type.Name} value '{value}'.";
+    private static string EnvNotSetErrorMessage => $"Environment variable '{EnvName}' is null or empty.";
+    private static string ConvertErrorMessage(Type type) => $"Failed to convert environment variable '{EnvName}' to type '{type}'.";
+    private static string ParseErrorMessage(Type targetType) =>
+        $"Error mapping types.{Environment.NewLine}{Environment.NewLine}Mapping types:{Environment.NewLine}String -> {targetType.Name}{Environment.NewLine}System.String -> {targetType.FullName}";
 
     public EnvManagerTests(ITestOutputHelper output)
     {
@@ -26,26 +23,21 @@ public class EnvManagerTests
     {
         Environment.SetEnvironmentVariable(EnvName, "");
 
-        Action testCode = () => EnvManager.GetEnvironmentValue<string>(EnvName, true);
+        static void testCode() => EnvManager.CreateWithDefaultConfiguration().GetEnvironmentValue<string>(EnvName, true);
 
         var exception = Assert.Throws<InvalidOperationException>(testCode);
         Assert.Equal(EnvNotSetErrorMessage, exception.Message);
     }
 
-    [Theory]
-    [InlineData('ñ')]
-    [InlineData("some string")]
-    [InlineData(123456789)]
-    [InlineData(true)]
-    public void GetEnvironmentValue_WithoutRaiseErrorEnvNotSet_DefaultValue<T>(T type)
+    [Fact]
+    public void GetEnvironmentValue_WithoutRaiseErrorEnvNotSet_DefaultValue()
     {
         var consoleOutput = new StringWriter();
         Console.SetOut(consoleOutput);
         Environment.SetEnvironmentVariable(EnvName, "");
 
-        var result = EnvManager.GetEnvironmentValue<T>(EnvName);
+        var result = EnvManager.CreateWithDefaultConfiguration().GetEnvironmentValue<char>(EnvName);
 
-        Assert.NotEqual(type, result);
         Assert.Equal(default, result);
         Assert.Contains(EnvNotSetErrorMessage, consoleOutput.ToString());
     }
@@ -55,7 +47,7 @@ public class EnvManagerTests
     {
         Environment.SetEnvironmentVariable(EnvName, "123");
 
-        Action testCode = () => EnvManager.GetEnvironmentValue<bool>(EnvName, true);
+        static void testCode() => EnvManager.CreateWithDefaultConfiguration().GetEnvironmentValue<bool>(EnvName, true);
 
         var exception = Assert.Throws<InvalidCastException>(testCode);
         Assert.Equal(ConvertErrorMessage(typeof(bool)), exception.Message);
@@ -68,47 +60,24 @@ public class EnvManagerTests
         Console.SetOut(consoleOutput);
         Environment.SetEnvironmentVariable(EnvName, "123");
 
-        var result = EnvManager.GetEnvironmentValue<bool>(EnvName);
+        var result = EnvManager.CreateWithDefaultConfiguration().GetEnvironmentValue<bool>(EnvName);
 
         Assert.Equal(default, result);
         Assert.Contains(ConvertErrorMessage(typeof(bool)), consoleOutput.ToString());
     }
 
     [Fact]
-    public void GetEnvironmentValue_UnsupportedDateTimeFormat_ThrowException()
-    {
-        Environment.SetEnvironmentVariable(EnvName, "2023|05|28T19:53:00");
-
-        Action testCode = () => EnvManager.GetEnvironmentValue<DateTime>(EnvName, true);
-
-        var exception = Assert.Throws<InvalidCastException>(testCode);
-        Assert.Equal(ConvertErrorMessage(typeof(DateTime)), exception.Message);
-        var innerException = Assert.IsType<FormatException>(exception.InnerException);
-        Assert.Equal(ParseErrorMessage(typeof(DateTime), "2023|05|28T19:53:00"), innerException.Message);
-    }
-
-    [Fact]
-    public void GetEnvironmentValue_UnsupportedTimeSpanFormat_ThrowException()
+    public void GetEnvironmentValue_UnsupportedFormat_ThrowException()
     {
         Environment.SetEnvironmentVariable(EnvName, "19|53|00");
 
-        Action testCode = () => EnvManager.GetEnvironmentValue<TimeSpan>(EnvName, true);
+        static void testCode() => EnvManager.CreateWithDefaultConfiguration().GetEnvironmentValue<TimeSpan>(EnvName, true);
 
         var exception = Assert.Throws<InvalidCastException>(testCode);
         Assert.Equal(ConvertErrorMessage(typeof(TimeSpan)), exception.Message);
-        var innerException = Assert.IsType<FormatException>(exception.InnerException);
-        Assert.Equal(ParseErrorMessage(typeof(TimeSpan), "19|53|00"), innerException.Message);
-    }
 
-    [Fact]
-    public void AddCustomDateTimeFormat_ExpectedDateTime()
-    {
-        Environment.SetEnvironmentVariable(EnvName, "2023*05*28T19:53:00");
-        EnvManager.AddCustomDateTimeFormat("yyyy*MM*ddTHH:mm:ss");
-
-        var result = EnvManager.GetEnvironmentValue<DateTime>(EnvName, true);
-
-        Assert.Equal(DateTime.Parse("2023.05.28T19:53:00"), result);
+        var innerException = Assert.IsType<AutoMapperMappingException>(exception.InnerException);
+        Assert.Equal(ParseErrorMessage(typeof(TimeSpan)), innerException.Message);
     }
 
     [Theory]
@@ -117,10 +86,25 @@ public class EnvManagerTests
     {
         Environment.SetEnvironmentVariable(EnvName, envValue);
 
-        dynamic result = EnvManager.GetEnvironmentValue(type, EnvName);
+        dynamic result = EnvManager.CreateWithDefaultConfiguration().GetEnvironmentValue(type, EnvName);
 
         Assert.Equal(expected, (object)result);
         output.WriteLine(result.GetType().Name);
+    }
+
+    [Fact]
+    public void GetEnvironmentValue_AddNewFormat()
+    {
+        Environment.SetEnvironmentVariable(EnvName, "Value2");
+
+        var mappingConfig = new EnvManagerMappingConfigurator()
+            .CreateMapFor(x => Enum.Parse<MyEnumeration>(x, true))
+            .Build();
+        var envManager = new EnvManager(mappingConfig);
+
+        var result = envManager.GetEnvironmentValue<MyEnumeration>(EnvName);
+
+        Assert.Equal(MyEnumeration.Value2, result);
     }
 
     public static IEnumerable<object[]> Data =>
@@ -139,18 +123,10 @@ public class EnvManagerTests
             new object[] { "65535", (ushort)65535, typeof(ushort) },
             new object[] { "255", (byte)255, typeof(byte) },
             new object[] { "127", (sbyte)127, typeof(sbyte) },
-            new object[] { "true", true, typeof(bool) },
-            new object[] { "2023-05-15T19:00:33", DateTime.Parse("2023-05-15T19:00:33"), typeof(DateTime) },
-            new object[] { "2023/05/15 07:00:33 PM", DateTime.ParseExact("2023/05/15 07:00:33 PM", "yyyy/MM/dd hh:mm:ss tt", CultureInfo.InvariantCulture), typeof(DateTime) },
-            new object[] { "15.05.2023 19:00:33", DateTime.ParseExact("15.05.2023 19:00:33", "dd.MM.yyyy HH:mm:ss", CultureInfo.InvariantCulture), typeof(DateTime) },
-            new object[] { "Value2", MyEnum.Value2, typeof(MyEnum) },
-            new object[] { "1.23:45:56.789", TimeSpan.Parse("1.23:45:56.789"), typeof(TimeSpan) },
-            new object[] { "23:45:56", TimeSpan.Parse("23:45:56"), typeof(TimeSpan) },
-            new object[] { "23:45:56", TimeSpan.Parse("23:45:56"), typeof(TimeSpan) },
-            new object[] { "1.23:45:56", TimeSpan.Parse("1.23:45:56"), typeof(TimeSpan) },
+            new object[] { "true", true, typeof(bool) }
         };
 
-    public enum MyEnum
+    internal enum MyEnumeration
     {
         Value1,
         Value2
