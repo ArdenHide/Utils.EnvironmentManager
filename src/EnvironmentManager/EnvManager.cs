@@ -9,14 +9,15 @@ public class EnvManager
     private readonly IMapper mapper;
     private readonly ILogger<EnvManager> logger;
 
+    public EnvManager(ILogger<EnvManager>? logger = null)
+        : this(new EnvManagerMappingConfigurator().Build(), logger)
+    { }
+
     public EnvManager(IConfigurationProvider config, ILogger<EnvManager>? logger = null)
     {
         mapper = new Mapper(config);
         this.logger = logger ?? NullLogger<EnvManager>.Instance;
     }
-
-    public static EnvManager CreateWithDefaultConfiguration(ILogger<EnvManager>? logger = null) =>
-        new(new EnvManagerMappingConfigurator().Build(), logger);
 
     public object GetEnvironmentValue(Type type, string variableName, bool raiseException = false)
     {
