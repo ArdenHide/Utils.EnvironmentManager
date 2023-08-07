@@ -18,7 +18,8 @@
     <PackageLicenseFile>LICENSE</PackageLicenseFile>
     <PackageProjectUrl>www.nuget.org/packages/Utils.EnvironmentManager/latest</PackageProjectUrl>
     <PackageIcon>128x128_nuget_transparent.png</PackageIcon>
-    <PackageReleaseNotes>- </PackageReleaseNotes>
+    <PackageReleaseNotes>- Simplified initialize of EnvManager
+- Added Logger via 'Microsoft.Extensions.Logging'</PackageReleaseNotes>
   </PropertyGroup>
 
   <ItemGroup>
