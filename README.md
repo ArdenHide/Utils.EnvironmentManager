@@ -51,7 +51,7 @@ public object GetEnvironmentValue(Type type, string variableName, bool raiseExce
 **Returns:**
 - `object`: The converted value of the environment variable.
 
-### GetEnvironmentValue`<T>`
+### GetEnvironmentValue&lt;T&gt;
 This method retrieves the value of the specified environment variable and converts it to the specified type `T`.
 
 **Signature:**
