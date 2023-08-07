@@ -6,7 +6,7 @@
     <Nullable>enable</Nullable>
     <PackageId>Utils.EnvironmentManager</PackageId>
     <Title>Manager for working with environment variables in .NET</Title>
-    <Version>2.0.0</Version>
+    <Version>2.0.1</Version>
     <Authors>ArdenHide</Authors>
     <Company>ArdenHide</Company>
     <Product>Utils.EnvironmentManager</Product>
@@ -18,8 +18,7 @@
     <PackageLicenseFile>LICENSE</PackageLicenseFile>
     <PackageProjectUrl>www.nuget.org/packages/Utils.EnvironmentManager/latest</PackageProjectUrl>
     <PackageIcon>128x128_nuget_transparent.png</PackageIcon>
-    <PackageReleaseNotes>- Made EnvManager non-static.
-- Included AutoMapper library for type conversion.</PackageReleaseNotes>
+    <PackageReleaseNotes>- </PackageReleaseNotes>
   </PropertyGroup>
 
   <ItemGroup>
