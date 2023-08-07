@@ -21,10 +21,16 @@ The `EnvironmentManager` namespace now provides a class `EnvManager` that uses `
 
 ## Initialization
 
-To initialize the `EnvManager`, a configuration from `AutoMapper` is required:
+`EnvManager` initialization can be achieved with or without a custom `AutoMapper` configuration:
 
+1. Without a custom configuration:
 ```csharp
-var manager = EnvManager.CreateWithDefaultConfiguration();
+var manager = new EnvManager();
+```
+
+2. With a custom configuration:
+```csharp
+var manager = new EnvManager(config: config);
 ```
 
 ## Methods
@@ -72,7 +78,7 @@ var config = new EnvManagerMappingConfigurator()
     .CreateMapFor(x => Enum.Parse<MyEnumeration>(x, true))
     .Build();
 
-var manager = new EnvManager(config);
+var manager = new EnvManager(config: config);
 
 DateTime customDateFormat = manager.GetEnvironmentValue<DateTime>("CUSTOM_DATE_FORMAT");
 ```
@@ -80,3 +86,35 @@ DateTime customDateFormat = manager.GetEnvironmentValue<DateTime>("CUSTOM_DATE_F
 In this example, a custom date format is added using the `CreateMapFor` method.
 Also in this example adding mapping for a `MyEnumeration` enum.
 Once the custom mappings are added, the configuration is built and passed to the `EnvManager`.
+
+## Logging
+
+`EnvManager` incorporates logging through the Microsoft's ILogger interface, providing insights into the operations and potential issues while working with environment variables.
+
+### Logger Initialization
+
+You can pass an instance of `ILogger<EnvManager>` when creating the `EnvManager`.
+If no logger is provided, a default instance of `NullLogger<EnvManager>` is used, which means no logging output will be produced.
+
+Example:
+```csharp
+var logger = new LoggerFactory().CreateLogger<EnvManager>();
+var manager = new EnvManager(logger: logger);
+```
+
+If you wish to use the default logger (which won't produce any log output):
+```csharp
+var manager = new EnvManager();
+```
+
+### Logging Scenarios
+
+Here are some situations where the `EnvManager` logs information:
+
+1. Warning: If an environment variable is null or empty and the `raiseException` parameter is set to `false`, a warning log will be generated.
+- Log Message: `"Environment variable '{VariableName}' is null or empty."`
+
+2. Error: If there's a failed conversion of an environment variable and the `raiseException` parameter is set to `false`, an error log will be created.
+- Log Message: `"Failed to convert environment variable '{VariableName}' to type '{Type}'. Returning default value."`
+
+In both scenarios, the actual variable name and type (if applicable) will replace the placeholders {VariableName} and {Type}.
