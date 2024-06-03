@@ -28,7 +28,7 @@ public class EnumExtensionsTests
         [InlineData(Animal.COW)]
         internal void WhenValueExist_WhenRaiseExceptionSetFalse(Animal animal)
         {
-            var value = animal.GetEnvironmentValue<Animal, string>(false);
+            var value = animal.GetEnvironmentValue<Animal, string>();
 
             value.Should().Be(Sounds[animal]);
         }
