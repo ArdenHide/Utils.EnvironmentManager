@@ -17,6 +17,8 @@
 	<PackageProjectUrl>www.nuget.org/packages/Utils.EnvironmentManager/latest</PackageProjectUrl>
 	<PackageIcon>128x128_nuget_transparent.png</PackageIcon>
 	<PackageReleaseNotes>https://github.com/ArdenHide/Utils.EnvironmentManager/releases/tag/3.0.0</PackageReleaseNotes>
+	<IncludeSymbols>True</IncludeSymbols>
+	<SymbolPackageFormat>snupkg</SymbolPackageFormat>
   </PropertyGroup>
 
   <ItemGroup>
