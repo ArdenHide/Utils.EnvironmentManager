@@ -1,26 +1,31 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
 
   <PropertyGroup>
-    <TargetFramework>net6.0</TargetFramework>
-    <ImplicitUsings>enable</ImplicitUsings>
-    <Nullable>enable</Nullable>
-    <PackageId>Utils.EnvironmentManager</PackageId>
-    <Title>Manager for working with environment variables in .NET</Title>
-    <Version>2.0.1</Version>
-    <Authors>ArdenHide</Authors>
-    <Company>ArdenHide</Company>
-    <Product>Utils.EnvironmentManager</Product>
-    <Description>The EnvManager class provides methods for retrieving environment variable values and handling conversions.</Description>
-    <PackageReadmeFile>README.md</PackageReadmeFile>
-    <RepositoryUrl>https://github.com/ArdenHide/Utils.EnvironmentManager</RepositoryUrl>
-    <RepositoryType>git</RepositoryType>
-    <PackageTags>Environment</PackageTags>
-    <PackageLicenseFile>LICENSE</PackageLicenseFile>
-    <PackageProjectUrl>www.nuget.org/packages/Utils.EnvironmentManager/latest</PackageProjectUrl>
-    <PackageIcon>128x128_nuget_transparent.png</PackageIcon>
-    <PackageReleaseNotes>- Simplified initialize of EnvManager
-- Added Logger via 'Microsoft.Extensions.Logging'</PackageReleaseNotes>
+	<TargetFramework>netstandard2.1</TargetFramework>
+	<PackageId>Utils.EnvironmentManager</PackageId>
+	<Title>Manager for working with environment variables in .NET</Title>
+	<Version>2.0.1</Version>
+	<Authors>ArdenHide</Authors>
+	<Company>ArdenHide</Company>
+	<Product>Utils.EnvironmentManager</Product>
+	<Description>The EnvManager class provides methods for retrieving environment variable values and handling conversions.</Description>
+	<PackageReadmeFile>README.md</PackageReadmeFile>
+	<RepositoryUrl>https://github.com/ArdenHide/Utils.EnvironmentManager</RepositoryUrl>
+	<RepositoryType>git</RepositoryType>
+	<PackageTags>Environment</PackageTags>
+	<PackageLicenseFile>LICENSE</PackageLicenseFile>
+	<PackageProjectUrl>www.nuget.org/packages/Utils.EnvironmentManager/latest</PackageProjectUrl>
+	<PackageIcon>128x128_nuget_transparent.png</PackageIcon>
+	<PackageReleaseNotes>
+	  - Simplified initialize of EnvManager
+	  - Added Logger via 'Microsoft.Extensions.Logging'
+	</PackageReleaseNotes>
   </PropertyGroup>
+
+  <ItemGroup>
+    <PackageReference Include="AutoMapper" Version="12.0.1" />
+    <PackageReference Include="Microsoft.Extensions.Logging" Version="7.0.0" />
+  </ItemGroup>
 
   <ItemGroup>
     <None Include="..\..\LICENSE">
@@ -35,11 +40,6 @@
       <Pack>True</Pack>
       <PackagePath>\</PackagePath>
     </None>
-  </ItemGroup>
-
-  <ItemGroup>
-    <PackageReference Include="AutoMapper" Version="12.0.1" />
-    <PackageReference Include="Microsoft.Extensions.Logging" Version="7.0.0" />
   </ItemGroup>
 
 </Project>
