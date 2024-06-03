@@ -1,12 +1,15 @@
-﻿namespace EnvironmentManager.Extensions;
+﻿using System;
 
-public static class EnumExtensions
+namespace EnvironmentManager.Extensions
 {
-    private static readonly EnvManager envManager = new();
-
-    public static TResponse GetEnvironmentValue<TEnum, TResponse>(this TEnum key, bool raiseException = false)
-        where TEnum : Enum
+    public static class EnumExtensions
     {
-        return envManager.GetEnvironmentValue<TResponse>(key.ToString(), raiseException);
+        private static readonly EnvManager envManager = new EnvManager();
+
+        public static TResponse GetEnvironmentValue<TEnum, TResponse>(this TEnum key, bool raiseException = false)
+            where TEnum : Enum
+        {
+            return envManager.GetEnvironmentValue<TResponse>(key.ToString(), raiseException);
+        }
     }
 }
