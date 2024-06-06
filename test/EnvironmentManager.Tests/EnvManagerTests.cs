@@ -1,8 +1,6 @@
-using Moq;
 using Xunit;
 using AutoMapper;
 using Xunit.Abstractions;
-using Microsoft.Extensions.Logging;
 
 namespace EnvironmentManager.Tests;
 
