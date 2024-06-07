@@ -1,4 +1,5 @@
-﻿using Xunit;
+﻿using EnvironmentManager.Attributes;
+using Xunit;
 using FluentAssertions;
 using EnvironmentManager.Extensions;
 
@@ -6,31 +7,35 @@ namespace EnvironmentManager.Tests.Extensions;
 
 public class EnumExtensionsTests
 {
-    internal enum Animal { DOG, CAT, COW }
-
-    internal static IDictionary<Animal, string> Sounds => new Dictionary<Animal, string>
+    internal enum Environments
     {
-        { Animal.DOG, "woof woof" },
-        { Animal.CAT, "meow meow" },
-        { Animal.COW, "moo" }
+        [EnvironmentVariable(typeof(string), true)]
+        RPC_URL,
+        [EnvironmentVariable(typeof(int))]
+        CHAIN_ID
+    }
+
+    internal static Dictionary<Environments, string> EnvironmentsValues => new()
+    {
+        { Environments.RPC_URL, "http://localhost:5050" },
+        { Environments.CHAIN_ID, "97" }
     };
 
     public class GetEnvironmentValue
     {
         public GetEnvironmentValue()
         {
-            Sounds.ToList().ForEach(x => Environment.SetEnvironmentVariable(x.Key.ToString(), x.Value));
+            EnvironmentsValues.ToList().ForEach(x => Environment.SetEnvironmentVariable(x.Key.ToString(), x.Value));
         }
 
         [Theory]
-        [InlineData(Animal.DOG)]
-        [InlineData(Animal.CAT)]
-        [InlineData(Animal.COW)]
-        internal void WhenValueExist_WhenRaiseExceptionSetFalse(Animal animal)
+        [InlineData(Environments.RPC_URL, "http://localhost:5050")]
+        [InlineData(Environments.CHAIN_ID, 97)]
+        internal void WhenValueExist_WhenRaiseExceptionSetFalse(Environments environment, object expected)
         {
-            var value = animal.GetEnvironmentValue();
+            var value = environment.GetEnvironmentValue();
 
-            value.Should().Be(Sounds[animal]);
+            value.Should().Be(expected);
         }
     }
 }
