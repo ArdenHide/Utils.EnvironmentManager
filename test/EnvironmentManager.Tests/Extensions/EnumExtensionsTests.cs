@@ -9,7 +9,6 @@ public class EnumExtensionsTests
 {
     internal enum Environments
     {
-        [EnvironmentVariable(typeof(string), true)]
         RPC_URL,
         [EnvironmentVariable(typeof(int))]
         CHAIN_ID
