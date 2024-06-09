@@ -1,6 +1,6 @@
-﻿using EnvironmentManager.Attributes;
-using Xunit;
+﻿using Xunit;
 using FluentAssertions;
+using EnvironmentManager.Attributes;
 using EnvironmentManager.Extensions;
 
 namespace EnvironmentManager.Tests.Extensions;
@@ -20,9 +20,9 @@ public class EnumExtensionsTests
         { Environments.CHAIN_ID, "97" }
     };
 
-    public class GetEnvironmentValue
+    public class Get
     {
-        public GetEnvironmentValue()
+        public Get()
         {
             EnvironmentsValues.ToList().ForEach(x => Environment.SetEnvironmentVariable(x.Key.ToString(), x.Value));
         }
@@ -32,7 +32,7 @@ public class EnumExtensionsTests
         [InlineData(Environments.CHAIN_ID, 97)]
         internal void WhenValueExist_WhenRaiseExceptionSetFalse(Environments environment, object expected)
         {
-            var value = environment.GetEnvironmentValue();
+            var value = environment.Get();
 
             value.Should().Be(expected);
         }
