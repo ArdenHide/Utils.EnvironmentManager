@@ -32,7 +32,7 @@ public class EnumExtensionsTests
         [InlineData(Environments.CHAIN_ID, 97)]
         internal void WhenValueExist_WhenRaiseExceptionSetFalse(Environments environment, object expected)
         {
-            var value = environment.Get();
+            var value = environment.Get() as object;
 
             value.Should().Be(expected);
         }
