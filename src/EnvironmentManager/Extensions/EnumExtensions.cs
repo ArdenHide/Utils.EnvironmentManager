@@ -19,7 +19,7 @@ namespace EnvironmentManager.Extensions
         /// <param name="key">The enum key associated with the environment value.</param>
         /// <param name="envManager">Optional. An instance of <see cref="EnvManager"/> to use for retrieving environment values. If not provided, a default instance is used.</param>
         /// <returns>The environment value cast to the type specified in the <see cref="EnvironmentVariableAttribute"/>, or to string if no attribute is set.</returns>
-        public static object GetEnvironmentValue(this Enum key, EnvManager? envManager = null)
+        public static object Get(this Enum key, EnvManager? envManager = null)
         {
             var attribute = key.GetType().GetField(key.ToString())?.GetCustomAttribute<EnvironmentVariableAttribute>();
 
