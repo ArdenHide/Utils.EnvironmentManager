@@ -1,5 +1,6 @@
 using Xunit;
 using AutoMapper;
+using EnvironmentManager.Core;
 using Xunit.Abstractions;
 
 namespace EnvironmentManager.Tests;

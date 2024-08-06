@@ -4,30 +4,52 @@ using EnvironmentManager.Attributes;
 
 namespace EnvironmentManager.Extensions
 {
-    /// <summary>
-    /// Provides extension methods for Enums to work with environment settings, using attributes to specify type and requirement status.
-    /// </summary>
     public static class EnumExtensions
     {
-        private static readonly EnvManager _envManager = new EnvManager();
-
-        /// <summary>
-        /// Retrieves an environment value associated with the specified enum key.<br/>
-        /// Utilizes <see cref="EnvironmentVariableAttribute"/> to determine the type and requirement of the environment variable.<br/>
-        /// If no attribute is found, defaults to a string type and not required.
-        /// </summary>
-        /// <param name="key">The enum key associated with the environment value.</param>
-        /// <param name="envManager">Optional. An instance of <see cref="EnvManager"/> to use for retrieving environment values. If not provided, a default instance is used.</param>
-        /// <returns>The environment value cast to the type specified in the <see cref="EnvironmentVariableAttribute"/>, or to string if no attribute is set.</returns>
-        public static dynamic Get(this Enum key, EnvManager? envManager = null)
+        public static dynamic Get(this Enum key, Core.EnvManager? envManager = null)
         {
-            var attribute = key.GetType().GetField(key.ToString())?.GetCustomAttribute<EnvironmentVariableAttribute>();
+            var attribute = GetAttribute(key);
+            return GetInternal<object>(key, attribute?.Type ?? typeof(string), attribute?.IsRequired ?? false, envManager);
+        }
 
-            var targetType = attribute?.Type ?? typeof(string);
-            var raiseException = attribute?.IsRequired ?? false;
+        public static object Get(this Enum key, Type type, Core.EnvManager? envManager = null)
+        {
+            var attribute = GetAttribute(key);
+            return GetInternal<object>(key, type, attribute?.IsRequired ?? false, envManager);
+        }
 
-            envManager ??= _envManager;
-            return envManager.GetEnvironmentValue(targetType, key.ToString(), raiseException);
+        public static T Get<T>(this Enum key, Core.EnvManager? envManager = null)
+        {
+            var attribute = GetAttribute(key);
+            return GetInternal<T>(key, typeof(T), attribute?.IsRequired ?? false, envManager);
+        }
+
+        public static dynamic GetRequired(this Enum key, Core.EnvManager? envManager = null)
+        {
+            var attribute = GetAttribute(key);
+            return GetInternal<object>(key, attribute?.Type ?? typeof(string), true, envManager);
+        }
+
+        public static object GetRequired(this Enum key, Type type, Core.EnvManager? envManager = null)
+        {
+            return GetInternal<object>(key, type, true, envManager);
+        }
+
+        public static T GetRequired<T>(this Enum key, Core.EnvManager? envManager = null)
+        {
+            return GetInternal<T>(key, typeof(T), true, envManager);
+        }
+
+        public static T GetInternal<T>(this Enum key, Type type, bool raiseException = false, Core.EnvManager? envManager = null)
+        {
+            return envManager == null
+                ? (T)Static.EnvManager.Get(type, key.ToString(), raiseException)
+                : (T)envManager.Get(type, key.ToString(), raiseException);
+        }
+
+        private static EnvironmentVariableAttribute? GetAttribute(Enum key)
+        {
+            return key.GetType().GetField(key.ToString())?.GetCustomAttribute<EnvironmentVariableAttribute>();
         }
     }
 }
