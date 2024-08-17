@@ -7,7 +7,7 @@ using EnvironmentManager.Tests.TestHelpers;
 
 namespace EnvironmentManager.Tests.Extensions;
 
-public class EnumExtensionsTests : TestData
+public class EnumExtensionsTests
 {
     public class Get : TestData
     {

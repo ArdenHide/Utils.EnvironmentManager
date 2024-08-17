@@ -9,7 +9,7 @@ using Microsoft.Extensions.Logging.Abstractions;
 
 namespace EnvironmentManager.Tests.Core;
 
-public class EnvManagerTests : TestData
+public class EnvManagerTests
 {
     public class Constructors
     {
