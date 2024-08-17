@@ -12,7 +12,7 @@ public class TestData
     protected static readonly Mock<ILogger<IEnvManager>> MockLogger = new();
 
     protected static readonly MapperConfiguration MapperConfiguration = new EnvManagerMappingConfigurator()
-        .CreateMapFor(x => x
+        .CreateMapFor<int[]>(x => x
             .Split(new[] { ',' }, StringSplitOptions.RemoveEmptyEntries)
             .Select(num => int.Parse(num.Trim()))
             .ToArray<int>()
