@@ -1,14 +1,15 @@
 ﻿using System;
 using AutoMapper;
+using EnvironmentManager.Core;
 using Microsoft.Extensions.Logging;
 
 namespace EnvironmentManager.Static
 {
     public static class EnvManager
     {
-        private static Core.EnvManager _envManager = new Core.EnvManager();
+        private static IEnvManager _envManager = new Core.EnvManager();
 
-        public static void Initialize(IConfigurationProvider? config = null, ILogger<Core.EnvManager>? logger = null)
+        public static void Initialize(IConfigurationProvider? config = null, ILogger<IEnvManager>? logger = null)
         {
             _envManager = new Core.EnvManager(config, logger);
         }

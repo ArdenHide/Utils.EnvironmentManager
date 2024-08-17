@@ -1,79 +1,64 @@
 ﻿using System;
 using AutoMapper;
-using EnvironmentManager.Extensions;
 using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Logging.Abstractions;
 
 namespace EnvironmentManager.Core
 {
-    public class EnvManager
+    public class EnvManager : IEnvManager
     {
-        private readonly IMapper _mapper;
-        private readonly ILogger<EnvManager> _logger;
+        public IMapper Mapper { get; }
+        public ILogger<IEnvManager> Logger { get; }
 
-        public EnvManager() : this(null, null) { }
-
-        public EnvManager(IConfigurationProvider? config = null, ILogger<EnvManager>? logger = null)
+        public EnvManager(IConfigurationProvider? config = null, ILogger<IEnvManager>? logger = null)
         {
-            _mapper = new Mapper(config ?? new MapperConfiguration(DefaultConfigurationProvider.DefaultConfiguration));
-            _logger = logger ?? NullLogger<EnvManager>.Instance;
+            config?.AssertConfigurationIsValid();
+            Mapper = new Mapper(config ?? DefaultMapperConfiguration.DefaultConfiguration);
+            Logger = logger ?? NullLogger<IEnvManager>.Instance;
         }
 
         public object Get(Type type, string variableName, bool raiseException = false)
         {
-            var envValue = GetEnvironmentVariable(variableName, raiseException);
-            return ConvertEnvironmentValue(type, variableName, envValue, raiseException);
+            return GetInternal<object>(type, variableName, raiseException);
         }
 
         public T Get<T>(string variableName, bool raiseException = false)
         {
-            var envValue = GetEnvironmentVariable(variableName, raiseException);
-            return ConvertEnvironmentValue<T>(variableName, envValue, raiseException);
+            return GetInternal<T>(typeof(T), variableName, raiseException);
         }
 
         public object GetRequired(Type type, string variableName)
         {
-            var envValue = GetEnvironmentVariable(variableName, true);
-            return ConvertEnvironmentValue(type, variableName, envValue, true);
+            return GetInternal<object>(type, variableName, true);
         }
 
         public T GetRequired<T>(string variableName)
         {
-            var envValue = GetEnvironmentVariable(variableName, true);
-            return ConvertEnvironmentValue<T>(variableName, envValue, true);
+            return GetInternal<T>(typeof(T), variableName, true);
         }
 
-        private string GetEnvironmentVariable(string variableName, bool raiseException)
+        internal T GetInternal<T>(Type type, string variableName, bool raiseException)
         {
             var envValue = Environment.GetEnvironmentVariable(variableName);
+            return ConvertEnvironmentValueInternal<T>(type, variableName, envValue, raiseException);
+        }
 
-            if (!string.IsNullOrWhiteSpace(envValue)) return envValue;
-
-            if (raiseException)
+        internal T ConvertEnvironmentValueInternal<T>(Type targetType, string variableName, string? envValue, bool raiseException)
+        {
+            if (string.IsNullOrWhiteSpace(envValue) && raiseException)
             {
-                throw new InvalidOperationException($"Environment variable '{variableName}' is null or empty.");
+                throw new ArgumentNullException(nameof(envValue), $"Environment variable '{variableName}' is null or empty.");
             }
 
-            _logger.LogWarning("Environment variable '{VariableName}' is null or empty. Trying return default value.", variableName);
+            if (string.IsNullOrWhiteSpace(envValue) && !raiseException)
+            {
+                Logger.LogWarning("Environment variable '{VariableName}' is null or empty. Trying return default value.", variableName);
+                return default!;
+            }
 
-            return TypeExtensions.GetDefaultValueOrThrow<string>();
-        }
-
-        private T ConvertEnvironmentValue<T>(string variableName, string envValue, bool raiseException)
-        {
-            return ConvertEnvironmentValueInternal<T>(typeof(T), variableName, envValue, raiseException);
-        }
-
-        private object ConvertEnvironmentValue(Type type, string variableName, string envValue, bool raiseException)
-        {
-            return ConvertEnvironmentValueInternal<object>(type, variableName, envValue, raiseException);
-        }
-
-        private T ConvertEnvironmentValueInternal<T>(Type targetType, string variableName, string envValue, bool raiseException)
-        {
             try
             {
-                return (T)_mapper.Map(envValue, typeof(string), targetType);
+                return (T)Mapper.Map(envValue, typeof(string), targetType);
             }
             catch (Exception ex)
             {
@@ -82,8 +67,9 @@ namespace EnvironmentManager.Core
                     throw new InvalidCastException($"Failed to convert environment variable '{variableName}' to type '{targetType}'.", ex);
                 }
 
-                _logger.LogError("Failed to convert environment variable '{VariableName}' to type '{Type}'. Trying return default value.", variableName, targetType);
-                return TypeExtensions.GetDefaultValueOrThrow<T>();
+                Logger.LogError("Failed to convert environment variable '{VariableName}' to type '{Type}'. Trying return default value.", variableName, targetType);
+
+                return default!;
             }
         }
     }
