@@ -9,6 +9,11 @@ namespace EnvironmentManager.Static
     {
         private static IEnvManager _envManager = new Core.EnvManager();
 
+        public static void Initialize(IEnvManager envManager)
+        {
+            _envManager = envManager;
+        }
+
         public static void Initialize(IConfigurationProvider? config = null, ILogger<IEnvManager>? logger = null)
         {
             _envManager = new Core.EnvManager(config, logger);
