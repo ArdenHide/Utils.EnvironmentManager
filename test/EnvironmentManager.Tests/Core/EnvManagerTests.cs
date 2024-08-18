@@ -4,6 +4,7 @@ using AutoMapper;
 using FluentAssertions;
 using EnvironmentManager.Core;
 using Microsoft.Extensions.Logging;
+using EnvironmentManager.Configuration;
 using EnvironmentManager.Tests.TestHelpers;
 using Microsoft.Extensions.Logging.Abstractions;
 

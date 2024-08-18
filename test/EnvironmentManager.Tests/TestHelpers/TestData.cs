@@ -4,6 +4,7 @@ using FluentAssertions;
 using EnvironmentManager.Core;
 using Microsoft.Extensions.Logging;
 using EnvironmentManager.Attributes;
+using EnvironmentManager.Configuration;
 
 namespace EnvironmentManager.Tests.TestHelpers;
 

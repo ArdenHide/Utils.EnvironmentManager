@@ -3,7 +3,7 @@ using AutoMapper;
 using System.Linq.Expressions;
 using EnvironmentManager.Extensions;
 
-namespace EnvironmentManager.Core
+namespace EnvironmentManager.Configuration
 {
     /// <summary>
     /// Provides a fluent API for configuring environment variable mappings using AutoMapper.

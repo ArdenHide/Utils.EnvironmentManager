@@ -1,6 +1,7 @@
 ﻿using System;
 using AutoMapper;
 using Microsoft.Extensions.Logging;
+using EnvironmentManager.Configuration;
 using Microsoft.Extensions.Logging.Abstractions;
 
 namespace EnvironmentManager.Core

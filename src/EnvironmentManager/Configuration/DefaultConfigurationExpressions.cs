@@ -2,7 +2,7 @@
 using AutoMapper;
 using EnvironmentManager.Extensions;
 
-namespace EnvironmentManager.Core
+namespace EnvironmentManager.Configuration
 {
     /// <summary>
     /// Provides default configuration expressions for AutoMapper that map string environment variable values to common data types.

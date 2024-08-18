@@ -12,79 +12,152 @@
 
 ---
 
-The `EnvironmentManager` namespace now provides a class `EnvManager` that uses `AutoMapper` package, for retrieving environment variable values and performing type conversions.
+Utils.EnvironmentManager is a C# library that provides robust management of environment variables with type conversion, logging, and mapping capabilities.
+It leverages AutoMapper to seamlessly convert environment variable values to strongly-typed objects, making it easier to handle configuration settings across various environments.
 
 > **Note**
 > This documentation assumes a basic understanding of `AutoMapper` library.
 > [AutoMapper docs](https://github.com/AutoMapper/AutoMapper/tree/v12.0.1#readme)
 
-## Initialization
+## Getting Started
 
-`EnvManager` initialization can be achieved with or without a custom `AutoMapper` configuration:
+## EnvManager Class (Instance-Based)
+The `EnvManager` class implements `IEnvManager` and provides a concrete implementation for managing environment variables.
 
-1. Without a custom configuration:
+### Methods
 ```csharp
-var manager = new EnvManager();
+public object Get(Type type, string variableName, bool raiseException = false);
+public T Get<T>(string variableName, bool raiseException = false);
+
+public object GetRequired(Type type, string variableName);
+public T GetRequired<T>(string variableName);
 ```
 
-2. With a custom configuration:
-```csharp
-var manager = new EnvManager(config: config);
-```
-
-## Methods
-
-### GetEnvironmentValue
-The method retrieves the value of the specified environment variable and converts it to the desired type using `AutoMapper`.
-
-**Signature:**
-```csharp
-public object GetEnvironmentValue(Type type, string variableName, bool raiseException = false)
-```
-
-**Parameters:**
-- `type` (Type): The type to which the environment variable's value should be converted.
-- `variableName` (string): The name of the environment variable.
-- `raiseException` (bool, optional): Specifies whether to raise an exception if the environment variable is null or empty, or when the conversion fails. Defaults to false.
-
-**Returns:**
-- `object`: The converted value of the environment variable.
-
-### GetEnvironmentValue&lt;T&gt;
-This method retrieves the value of the specified environment variable and converts it to the specified type `T`.
-
-**Signature:**
-```csharp
-public T GetEnvironmentValue<T>(string variableName, bool raiseException = false)
-```
-
-**Parameters:**
-- `variableName` (string): The name of the environment variable.
-- `raiseException` (bool, optional): Specifies whether to raise an exception if the environment variable is null or empty, or when the conversion fails. Defaults to false.
-
-**Returns:**
-- `T`: The converted value of the environment variable.
-
-## Adding Custom Mappings
-The library now uses `AutoMapper` for type conversions.
-Therefore, to add custom type conversions, you can utilize the `EnvManagerMappingConfigurator` class.
-
-**Example:**
+**Example: Basic Usage**
 
 ```csharp
-var config = new EnvManagerMappingConfigurator()
-    .CreateMapFor(x => DateTime.ParseExact(x, "dd-MM-yyyy HH:mm", CultureInfo.InvariantCulture))
-    .CreateMapFor(x => Enum.Parse<MyEnumeration>(x, true))
-    .Build();
+using EnvironmentManager.Core;
 
-var manager = new EnvManager(config: config);
+public class Example
+{
+    public static void Main()
+    {
+        var envManager = new EnvManager();
 
-DateTime customDateFormat = manager.GetEnvironmentValue<DateTime>("CUSTOM_DATE_FORMAT");
+        Environment.SetEnvironmentVariable("NUMBER", "131");
+        int number = envManager.Get<int>("NUMBER");
+        Console.WriteLine($"Number: {number}.");
+    }
+}
+// The example displays the following output:
+// Number: 131.
 ```
 
-In this example, a custom date format is added using the `CreateMapFor` method.
-Also in this example adding mapping for a `MyEnumeration` enum.
-Once the custom mappings are added, the configuration is built and passed to the `EnvManager`.
+## EnvManager Class (Static)
+For convenience, `Utils.EnvironmentManager` provides a static `EnvManager` class that can be used without instantiating an object.
+
+### Methods
+```csharp
+public static object Get(Type type, string variableName, bool raiseException = false);
+public static T Get<T>(string variableName, bool raiseException = false);
+
+public static object GetRequired(Type type, string variableName);
+public static T GetRequired<T>(string variableName);
+```
+
+**Example: Static Usage**
+```csharp
+using EnvironmentManager.Static;
+
+public class Example
+{
+    public static void Main()
+    {
+        Environment.SetEnvironmentVariable("NUMBER", "131");
+        int number = EnvManager.Get<int>("NUMBER");
+        Console.WriteLine($"Number: {number}.");
+    }
+}
+// The example displays the following output:
+// Number: 131.
+```
+
+## Enum Support
+The library also supports retrieving environment variables that are associated with enum values using custom attributes.
+
+### Methods
+```csharp
+public static dynamic Get(this Enum key, IEnvManager? envManager = null)
+public static object Get(this Enum key, Type type, IEnvManager? envManager = null)
+public static T Get<T>(this Enum key, IEnvManager? envManager = null)
+
+public static dynamic GetRequired(this Enum key, IEnvManager? envManager = null)
+public static object GetRequired(this Enum key, Type type, IEnvManager? envManager = null)
+public static T GetRequired<T>(this Enum key, IEnvManager? envManager = null)
+```
+
+**Example: Enum Support**
+```csharp
+using EnvironmentManager.Attributes;
+using EnvironmentManager.Extensions;
+
+public class Example
+{
+    public enum Env
+    {
+        [EnvironmentVariable(typeof(int), isRequired: true)]
+        NUMBER
+    }
+
+    public static void Main()
+    {
+        Environment.SetEnvironmentVariable("NUMBER", "131");
+
+        int number = Env.NUMBER.Get<int>();
+
+        Console.WriteLine($"Number: {number}.");
+    }
+}
+// The example displays the following output:
+// Number: 131.
+```
+
+## Custom Mapping Configuration
+You can customize how environment variables are mapped to specific types using the `EnvManagerMappingConfigurator`.
+
+**Example: Custom Mapping Configuration**
+```csharp
+using EnvironmentManager.Static;
+using EnvironmentManager.Configuration;
+
+public class Example
+{
+    public static void Main()
+    {
+        Environment.SetEnvironmentVariable("INTEGER_ARRAY", "32, 6, 5, 23");
+        Environment.SetEnvironmentVariable("NUMBER", "131");
+
+        var configuration = new EnvManagerMappingConfigurator()
+            .CreateMapFor<int[]>(x => x.Split(',', StringSplitOptions.RemoveEmptyEntries)
+                .Select(int.Parse)
+                .ToArray<int>()
+            )
+            .Build();
+
+        EnvManager.Initialize(config: configuration);
+
+        // Now you can retrieve environment variables with custom mapping
+        int[] integerArray = EnvManager.Get<int[]>("INTEGER_ARRAY");
+        int number = EnvManager.Get<int>("NUMBER");
+
+        Console.WriteLine($"Integer array: {string.Join(", ", integerArray)}.");
+        Console.WriteLine($"Number: {number}.");
+    }
+}
+// The example displays the following output:
+// Integer array: 32, 6, 5, 23.
+// Number: 131.
+```
 
 ## Logging
 

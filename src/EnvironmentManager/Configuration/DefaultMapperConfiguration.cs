@@ -1,6 +1,6 @@
 ﻿using AutoMapper;
 
-namespace EnvironmentManager.Core
+namespace EnvironmentManager.Configuration
 {
     /// <summary>
     /// Provides the default AutoMapper configuration provider for mapping environment variables to various types.
