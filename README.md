@@ -127,7 +127,6 @@ You can customize how environment variables are mapped to specific types using t
 
 **Example: Custom Mapping Configuration**
 ```csharp
-using EnvironmentManager.Static;
 using EnvironmentManager.Configuration;
 
 public class Example
@@ -135,7 +134,6 @@ public class Example
     public static void Main()
     {
         Environment.SetEnvironmentVariable("INTEGER_ARRAY", "32, 6, 5, 23");
-        Environment.SetEnvironmentVariable("NUMBER", "131");
 
         var configuration = new EnvManagerMappingConfigurator()
             .CreateMapFor<int[]>(x => x.Split(',', StringSplitOptions.RemoveEmptyEntries)
@@ -144,19 +142,22 @@ public class Example
             )
             .Build();
 
-        EnvManager.Initialize(config: configuration);
+        var envManager = new Core.EnvManager(configuration);
+
+        Static.EnvManager.Initialize(envManager);
+        // Static.EnvManager.Initialize(configuration);    // Or can pass configuration directly
 
         // Now you can retrieve environment variables with custom mapping
-        int[] integerArray = EnvManager.Get<int[]>("INTEGER_ARRAY");
-        int number = EnvManager.Get<int>("NUMBER");
+        int[] integerArrayViaStatic = Static.EnvManager.Get<int[]>("INTEGER_ARRAY");
+        int[] integerArrayViaInstance = envManager.Get<int[]>("INTEGER_ARRAY");
 
-        Console.WriteLine($"Integer array: {string.Join(", ", integerArray)}.");
-        Console.WriteLine($"Number: {number}.");
+        Console.WriteLine($"Integer array via static manager: {string.Join(", ", integerArrayViaStatic)}.");
+        Console.WriteLine($"Integer array via instance manager: {string.Join(", ", integerArrayViaInstance)}.");
     }
 }
 // The example displays the following output:
-// Integer array: 32, 6, 5, 23.
-// Number: 131.
+// Integer array via static manager: 32, 6, 5, 23.
+// Integer array via instance manager: 32, 6, 5, 23.
 ```
 
 ## Logging
