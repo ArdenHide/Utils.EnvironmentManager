@@ -161,33 +161,54 @@ public class Example
 ```
 
 ## Logging
-
-`EnvManager` incorporates logging through the Microsoft's ILogger interface, providing insights into the operations and potential issues while working with environment variables.
-
-### Logger Initialization
-
-You can pass an instance of `ILogger<EnvManager>` when creating the `EnvManager`.
+The library integrates with `Microsoft.Extensions.Logging` to provide logging for operations involving environment variables.
+You can supply your own `ILogger<IEnvManager>` instance when initializing `EnvManager`.
 If no logger is provided, a default instance of `NullLogger<EnvManager>` is used, which means no logging output will be produced.
 
-Example:
+**Example: Logging**
+> **Note**: In this example using `Microsoft.Extensions.Logging.Console` package.
+
 ```csharp
-var logger = new LoggerFactory().CreateLogger<EnvManager>();
-var manager = new EnvManager(logger: logger);
+using EnvironmentManager.Core;
+using Microsoft.Extensions.Logging;
+
+public class Example
+{
+    public static void Main()
+    {
+        Environment.SetEnvironmentVariable("ENVIRONMENT", "environment");
+
+        var loggerFactory = LoggerFactory.Create(builder => builder.AddConsole());
+        var logger = loggerFactory.CreateLogger<IEnvManager>();
+
+        var envManager = new EnvManager(logger: logger);
+
+        string environment = envManager.Get<string>("INVALID_ENVIRONMENT");
+        if (!string.IsNullOrEmpty(environment))
+        {
+            Console.WriteLine($"Environment: {environment}");
+        }
+    }
+}
+// The example displays the following output:
+// warn: EnvironmentManager.Core.IEnvManager[0]
+//       Environment variable 'INVALID_ENVIRONMENT' is null or empty.Trying return default value.
 ```
 
+**Example: Without logging**
 If you wish to use the default logger (which won't produce any log output):
+
 ```csharp
 var manager = new EnvManager();
 ```
 
 ### Logging Scenarios
-
 Here are some situations where the `EnvManager` logs information:
 
 1. Warning: If an environment variable is null or empty and the `raiseException` parameter is set to `false`, a warning log will be generated.
-- Log Message: `"Environment variable '{VariableName}' is null or empty."`
+- Log Message: `"Environment variable '{VariableName}' is null or empty. Trying return default value"`
 
 2. Error: If there's a failed conversion of an environment variable and the `raiseException` parameter is set to `false`, an error log will be created.
-- Log Message: `"Failed to convert environment variable '{VariableName}' to type '{Type}'. Returning default value."`
+- Log Message: `"Failed to convert environment variable '{VariableName}' to type '{Type}'. Trying return default value."`
 
 In both scenarios, the actual variable name and type (if applicable) will replace the placeholders {VariableName} and {Type}.
