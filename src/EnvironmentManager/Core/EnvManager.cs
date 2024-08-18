@@ -100,7 +100,7 @@ namespace EnvironmentManager.Core
                     throw new InvalidCastException($"Failed to convert environment variable '{variableName}' to type '{targetType}'.", ex);
                 }
 
-                Logger.LogError("Failed to convert environment variable '{VariableName}' to type '{Type}'. Trying return default value.", variableName, targetType);
+                Logger.LogError(ex, "Failed to convert environment variable '{VariableName}' to type '{Type}'. Trying return default value.", variableName, targetType);
 
                 return default!;
             }
