@@ -130,12 +130,6 @@ public class TestData
         return new object[] { stored, expected! };
     }
 
-    protected static void RunTest<TOutput>(Func<TOutput> methodToTest, TOutput expected)
-    {
-        var result = methodToTest.Invoke();
-        result.Should().BeEquivalentTo(expected);
-    }
-
     protected static string NameOfVariable<T>() => NameOfVariable(typeof(T));
     protected static string NameOfVariable(Type type) => $"{type.Name.ToUpper()}_VARIABLE_{Guid.NewGuid()}";
 }

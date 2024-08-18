@@ -20,7 +20,9 @@ public class EnvManagerStaticTests
             Environment.SetEnvironmentVariable(variableName, stored);
             EnvManager.Initialize(MapperConfiguration);
 
-            RunTest(() => EnvManager.Get(typeof(TOutput), variableName), expected!);
+            var result = EnvManager.Get(typeof(TOutput), variableName);
+
+            result.Should().BeEquivalentTo(expected);
         }
     }
 
@@ -35,7 +37,9 @@ public class EnvManagerStaticTests
             Environment.SetEnvironmentVariable(variableName, stored);
             EnvManager.Initialize(MapperConfiguration);
 
-            RunTest(() => EnvManager.Get<TOutput>(variableName), expected);
+            var result = EnvManager.Get<TOutput>(variableName);
+
+            result.Should().BeEquivalentTo(expected);
         }
     }
 
@@ -50,7 +54,9 @@ public class EnvManagerStaticTests
             Environment.SetEnvironmentVariable(variableName, stored);
             EnvManager.Initialize(MapperConfiguration);
 
-            RunTest(() => EnvManager.GetRequired(typeof(TOutput), variableName), expected!);
+            var result = EnvManager.GetRequired(typeof(TOutput), variableName);
+
+            result.Should().BeEquivalentTo(expected);
         }
     }
 
@@ -65,7 +71,9 @@ public class EnvManagerStaticTests
             Environment.SetEnvironmentVariable(variableName, stored);
             EnvManager.Initialize(MapperConfiguration);
 
-            RunTest(() => EnvManager.GetRequired<TOutput>(variableName), expected);
+            var result = EnvManager.GetRequired<TOutput>(variableName);
+
+            result.Should().BeEquivalentTo(expected);
         }
     }
 

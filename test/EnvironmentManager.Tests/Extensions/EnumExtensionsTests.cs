@@ -18,7 +18,9 @@ public class EnumExtensionsTests
         {
             Environment.SetEnvironmentVariable(enumMember.ToString(), stored);
 
-            RunTest(() => enumMember.Get(typeof(TOutput), EnvironmentManager), expected!);
+            var result = enumMember.Get(typeof(TOutput), EnvironmentManager);
+
+            result.Should().BeEquivalentTo(expected);
         }
     }
 
@@ -31,7 +33,9 @@ public class EnumExtensionsTests
         {
             Environment.SetEnvironmentVariable(enumMember.ToString(), stored);
 
-            RunTest(() => (TOutput)enumMember.Get(EnvironmentManager), expected!);
+            var result = (TOutput)enumMember.Get(EnvironmentManager);
+
+            result.Should().BeEquivalentTo(expected);
         }
     }
 
@@ -44,7 +48,9 @@ public class EnumExtensionsTests
         {
             Environment.SetEnvironmentVariable(enumMember.ToString(), stored);
 
-            RunTest(() => enumMember.Get<TOutput>(EnvironmentManager), expected);
+            var result = enumMember.Get<TOutput>(EnvironmentManager);
+
+            result.Should().BeEquivalentTo(expected);
         }
     }
 
@@ -57,7 +63,9 @@ public class EnumExtensionsTests
         {
             Environment.SetEnvironmentVariable(enumMember.ToString(), stored);
 
-            RunTest(() => enumMember.GetRequired(typeof(TOutput), EnvironmentManager), expected!);
+            var result = enumMember.GetRequired(typeof(TOutput), EnvironmentManager);
+
+            result.Should().BeEquivalentTo(expected);
         }
     }
 
@@ -70,7 +78,9 @@ public class EnumExtensionsTests
         {
             Environment.SetEnvironmentVariable(enumMember.ToString(), stored);
 
-            RunTest(() => enumMember.GetRequired(EnvironmentManager), expected!);
+            var result = (TOutput)enumMember.GetRequired(EnvironmentManager);
+
+            result.Should().BeEquivalentTo(expected);
         }
     }
 
@@ -83,7 +93,9 @@ public class EnumExtensionsTests
         {
             Environment.SetEnvironmentVariable(enumMember.ToString(), stored);
 
-            RunTest(() => enumMember.GetRequired<TOutput>(EnvironmentManager), expected);
+            var result = enumMember.GetRequired<TOutput>(EnvironmentManager);
+
+            result.Should().BeEquivalentTo(expected);
         }
     }
 
@@ -118,7 +130,9 @@ Mapping types:
         {
             Environment.SetEnvironmentVariable(enumMember.ToString(), stored);
 
-            RunTest(() => enumMember.GetInternal<TOutput>(typeof(TOutput), raiseException: true, envManager: EnvironmentManager), expected!);
+            var result = enumMember.GetInternal<TOutput>(typeof(TOutput), raiseException: true, envManager: EnvironmentManager);
+
+            result.Should().BeEquivalentTo(expected);
         }
     }
 }

@@ -48,7 +48,9 @@ public class EnvManagerTests
             var variableName = NameOfVariable<TOutput>();
             Environment.SetEnvironmentVariable(variableName, stored);
 
-            RunTest(() => EnvironmentManager.Get(typeof(TOutput), variableName), expected!);
+            var result = EnvironmentManager.Get(typeof(TOutput), variableName);
+
+            result.Should().BeEquivalentTo(expected);
         }
     }
 
@@ -62,7 +64,9 @@ public class EnvManagerTests
             var variableName = NameOfVariable<TOutput>();
             Environment.SetEnvironmentVariable(variableName, stored);
 
-            RunTest(() => EnvironmentManager.Get<TOutput>(variableName), expected);
+            var result = EnvironmentManager.Get<TOutput>(variableName);
+
+            result.Should().BeEquivalentTo(expected);
         }
     }
 
@@ -76,7 +80,9 @@ public class EnvManagerTests
             var variableName = NameOfVariable<TOutput>();
             Environment.SetEnvironmentVariable(variableName, stored);
 
-            RunTest(() => EnvironmentManager.GetRequired(typeof(TOutput), variableName), expected!);
+            var result = EnvironmentManager.GetRequired(typeof(TOutput), variableName);
+
+            result.Should().BeEquivalentTo(expected);
         }
     }
 
@@ -90,7 +96,9 @@ public class EnvManagerTests
             var variableName = NameOfVariable<TOutput>();
             Environment.SetEnvironmentVariable(variableName, stored);
 
-            RunTest(() => EnvironmentManager.GetRequired<TOutput>(variableName), expected);
+            var result = EnvironmentManager.GetRequired<TOutput>(variableName);
+
+            result.Should().BeEquivalentTo(expected);
         }
     }
 
@@ -104,7 +112,9 @@ public class EnvManagerTests
             var variableName = NameOfVariable<TOutput>();
             Environment.SetEnvironmentVariable(variableName, stored);
 
-            RunTest(() => EnvironmentManager.GetInternal<TOutput>(typeof(TOutput), variableName, true), expected);
+            var result = EnvironmentManager.GetInternal<TOutput>(typeof(TOutput), variableName, true);
+
+            result.Should().BeEquivalentTo(expected);
         }
     }
 
@@ -117,7 +127,9 @@ public class EnvManagerTests
         {
             var variableName = NameOfVariable<TOutput>();
 
-            RunTest(() => EnvironmentManager.ConvertEnvironmentValueInternal<TOutput>(typeof(TOutput), variableName, stored, true), expected);
+            var result = EnvironmentManager.ConvertEnvironmentValueInternal<TOutput>(typeof(TOutput), variableName, stored, true);
+
+            result.Should().BeEquivalentTo(expected);
         }
 
         [Fact]
