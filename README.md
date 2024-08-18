@@ -157,12 +157,12 @@ public class Example
 ```
 
 ## Logging
-The library integrates with `Microsoft.Extensions.Logging` to provide logging for operations involving environment variables.
+The library integrates with [Microsoft.Extensions.Logging](https://www.nuget.org/packages/Microsoft.Extensions.Logging/8.0.0#readme-body-tab) to provide logging for operations involving environment variables.
 You can supply your own `ILogger<IEnvManager>` instance when initializing `EnvManager`.
 If no logger is provided, a default instance of `NullLogger<EnvManager>` is used, which means no logging output will be produced.
 
 **Example: Logging**
-> **Note**: In this example using `Microsoft.Extensions.Logging.Console` package.
+> **Note**: In this example using [Microsoft.Extensions.Logging.Console](https://www.nuget.org/packages/Microsoft.Extensions.Logging.Console/8.0.0#readme-body-tab) package.
 
 ```csharp
 using EnvironmentManager.Core;
