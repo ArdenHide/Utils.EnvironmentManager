@@ -1,40 +1,138 @@
 ﻿using Xunit;
+using AutoMapper;
 using FluentAssertions;
-using EnvironmentManager.Attributes;
 using EnvironmentManager.Extensions;
+using EnvironmentManager.Static;
+using EnvironmentManager.Tests.TestHelpers;
 
 namespace EnvironmentManager.Tests.Extensions;
 
 public class EnumExtensionsTests
 {
-    internal enum Environments
+    public class Get : TestData
     {
-        RPC_URL,
-        [EnvironmentVariable(typeof(int))]
-        CHAIN_ID
+        [Theory]
+        [MemberData(nameof(EnumTestData))]
+        [MemberData(nameof(ImplementedEnumTestData))]
+        public void WhenValidValue_ShouldReturnConvertedValue<TOutput>(Enum enumMember, string stored, TOutput expected)
+        {
+            Environment.SetEnvironmentVariable(enumMember.ToString(), stored);
+
+            var result = enumMember.Get(typeof(TOutput), EnvironmentManager);
+
+            result.Should().BeEquivalentTo(expected);
+        }
     }
 
-    internal static Dictionary<Environments, string> EnvironmentsValues => new()
+    public class Get_Dynamic : TestData
     {
-        { Environments.RPC_URL, "http://localhost:5050" },
-        { Environments.CHAIN_ID, "97" }
-    };
-
-    public class Get
-    {
-        public Get()
+        [Theory]
+        [MemberData(nameof(EnumTestData))]
+        [MemberData(nameof(ImplementedEnumTestData))]
+        public void WhenValidValue_ShouldReturnConvertedValue<TOutput>(Enum enumMember, string stored, TOutput expected)
         {
-            EnvironmentsValues.ToList().ForEach(x => Environment.SetEnvironmentVariable(x.Key.ToString(), x.Value));
+            Environment.SetEnvironmentVariable(enumMember.ToString(), stored);
+
+            var result = (TOutput)enumMember.Get(EnvironmentManager);
+
+            result.Should().BeEquivalentTo(expected);
+        }
+    }
+
+    public class Get_Generic : TestData
+    {
+        [Theory]
+        [MemberData(nameof(EnumTestData))]
+        [MemberData(nameof(ImplementedEnumTestData))]
+        public void WhenValidValue_ShouldReturnConvertedValue<TOutput>(Enum enumMember, string stored, TOutput expected)
+        {
+            Environment.SetEnvironmentVariable(enumMember.ToString(), stored);
+
+            var result = enumMember.Get<TOutput>(EnvironmentManager);
+
+            result.Should().BeEquivalentTo(expected);
+        }
+    }
+
+    public class GetRequired : TestData
+    {
+        [Theory]
+        [MemberData(nameof(EnumTestData))]
+        [MemberData(nameof(ImplementedEnumTestData))]
+        public void WhenValidValue_ShouldReturnConvertedValue<TOutput>(Enum enumMember, string stored, TOutput expected)
+        {
+            Environment.SetEnvironmentVariable(enumMember.ToString(), stored);
+
+            var result = enumMember.GetRequired(typeof(TOutput), EnvironmentManager);
+
+            result.Should().BeEquivalentTo(expected);
+        }
+    }
+
+    public class GetRequired_Dynamic : TestData
+    {
+        [Theory]
+        [MemberData(nameof(EnumTestData))]
+        [MemberData(nameof(ImplementedEnumTestData))]
+        public void WhenValidValue_ShouldReturnConvertedValue<TOutput>(Enum enumMember, string stored, TOutput expected)
+        {
+            Environment.SetEnvironmentVariable(enumMember.ToString(), stored);
+
+            var result = (TOutput)enumMember.GetRequired(EnvironmentManager);
+
+            result.Should().BeEquivalentTo(expected);
+        }
+    }
+
+    public class GetRequired_Generic : TestData
+    {
+        [Theory]
+        [MemberData(nameof(EnumTestData))]
+        [MemberData(nameof(ImplementedEnumTestData))]
+        public void WhenValidValue_ShouldReturnConvertedValue<TOutput>(Enum enumMember, string stored, TOutput expected)
+        {
+            Environment.SetEnvironmentVariable(enumMember.ToString(), stored);
+
+            var result = enumMember.GetRequired<TOutput>(EnvironmentManager);
+
+            result.Should().BeEquivalentTo(expected);
+        }
+    }
+
+    public class GetInternal : TestData
+    {
+        [Theory]
+        [MemberData(nameof(ImplementedEnumTestData))]
+        public void WhenUsedDefaultEnvManager_ShouldThrowCauseDefaultNotImplementPassedTestData<TOutput>(Enum enumMember, string stored, TOutput _)
+        {
+            Environment.SetEnvironmentVariable(enumMember.ToString(), stored);
+
+            var testCode = () =>
+            {
+                EnvManager.Initialize(null, null);
+                return enumMember.GetInternal<TOutput>(typeof(TOutput), raiseException: true, envManager: null);
+            };
+
+            testCode.Should().Throw<InvalidCastException>()
+                .WithMessage($"Failed to convert environment variable '{enumMember}' to type '{typeof(TOutput)}'.")
+                .WithInnerException<AutoMapperMappingException>()
+                .WithMessage($@"Missing type map configuration or unsupported mapping.
+
+Mapping types:
+{nameof(String)} -> {typeof(TOutput).Name}
+{typeof(string).FullName} -> {typeof(TOutput).FullName}");
         }
 
         [Theory]
-        [InlineData(Environments.RPC_URL, "http://localhost:5050")]
-        [InlineData(Environments.CHAIN_ID, 97)]
-        internal void WhenValueExist_WhenRaiseExceptionSetFalse(Environments environment, object expected)
+        [MemberData(nameof(EnumTestData))]
+        [MemberData(nameof(ImplementedEnumTestData))]
+        public void WhenUsedCustomEnvManager_ShouldSuccessfullyParseWithCustomManager<TOutput>(Enum enumMember, string stored, TOutput expected)
         {
-            var value = environment.Get() as object;
+            Environment.SetEnvironmentVariable(enumMember.ToString(), stored);
 
-            value.Should().Be(expected);
+            var result = enumMember.GetInternal<TOutput>(typeof(TOutput), raiseException: true, envManager: EnvironmentManager);
+
+            result.Should().BeEquivalentTo(expected);
         }
     }
 }

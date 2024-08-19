@@ -1,33 +1,135 @@
 ﻿using System;
 using System.Reflection;
+using EnvironmentManager.Core;
 using EnvironmentManager.Attributes;
 
 namespace EnvironmentManager.Extensions
 {
     /// <summary>
-    /// Provides extension methods for Enums to work with environment settings, using attributes to specify type and requirement status.
+    /// Provides extension methods for <see cref="Enum"/> types to retrieve environment variables using an <see cref="IEnvManager"/>.
     /// </summary>
     public static class EnumExtensions
     {
-        private static readonly EnvManager _envManager = new EnvManager();
+        /// <summary>
+        /// Retrieves the environment variable associated with the given enum value, using the type specified in the <see cref="EnvironmentVariableAttribute"/>.
+        /// </summary>
+        /// <param name="key">The enum value representing the environment variable.</param>
+        /// <param name="envManager">The <see cref="IEnvManager"/> to use for retrieving the environment variable. If <see langword="null"/>, the static <see cref="Static.EnvManager.Manager"/> will be used.</param>
+        /// <returns>The environment variable value as a <see langword="dynamic"/> object, or the <see langword="default"/> value if the variable is not found.</returns>
+        /// <remarks>
+        /// The type to which the environment variable should be converted is specified by the <see cref="EnvironmentVariableAttribute"/> applied to the enum field.
+        /// If the attribute is not present, the environment variable is treated as a string, and the environment variable is considered optional by default.
+        /// </remarks>
+        public static dynamic Get(this Enum key, IEnvManager? envManager = null)
+        {
+            var attribute = GetAttribute(key);
+            return GetInternal<object>(key, attribute?.Type ?? typeof(string), attribute?.IsRequired ?? false, envManager);
+        }
 
         /// <summary>
-        /// Retrieves an environment value associated with the specified enum key.<br/>
-        /// Utilizes <see cref="EnvironmentVariableAttribute"/> to determine the type and requirement of the environment variable.<br/>
-        /// If no attribute is found, defaults to a string type and not required.
+        /// Retrieves the environment variable associated with the given enum value, converted to the specified <paramref name="type"/>.
         /// </summary>
-        /// <param name="key">The enum key associated with the environment value.</param>
-        /// <param name="envManager">Optional. An instance of <see cref="EnvManager"/> to use for retrieving environment values. If not provided, a default instance is used.</param>
-        /// <returns>The environment value cast to the type specified in the <see cref="EnvironmentVariableAttribute"/>, or to string if no attribute is set.</returns>
-        public static dynamic Get(this Enum key, EnvManager? envManager = null)
+        /// <param name="key">The enum value representing the environment variable.</param>
+        /// <param name="type">The <see cref="Type"/> to which the environment variable should be converted.</param>
+        /// <param name="envManager">The <see cref="IEnvManager"/> to use for retrieving the environment variable. If <see langword="null"/>, the static <see cref="Static.EnvManager.Manager"/> will be used.</param>
+        /// <returns>The environment variable value as an <see cref="object"/>, or the <see langword="default"/> value if the variable is not found.</returns>
+        /// <remarks>
+        /// If the <see cref="EnvironmentVariableAttribute"/> is applied to the enum field, its type is ignored in favor of the specified <paramref name="type"/>.
+        /// If <see cref="EnvironmentVariableAttribute.IsRequired"/> is not explicitly set to <see langword="true"/>, the environment variable is considered optional by default.
+        /// </remarks>
+        public static object Get(this Enum key, Type type, IEnvManager? envManager = null)
         {
-            var attribute = key.GetType().GetField(key.ToString())?.GetCustomAttribute<EnvironmentVariableAttribute>();
+            var attribute = GetAttribute(key);
+            return GetInternal<object>(key, type, attribute?.IsRequired ?? false, envManager);
+        }
 
-            var targetType = attribute?.Type ?? typeof(string);
-            var raiseException = attribute?.IsRequired ?? false;
+        /// <summary>
+        /// Retrieves the environment variable associated with the given enum value, converted to the specified type <typeparamref name="T"/>.
+        /// </summary>
+        /// <typeparam name="T">The target type to which the environment variable should be converted.</typeparam>
+        /// <param name="key">The enum value representing the environment variable.</param>
+        /// <param name="envManager">The <see cref="IEnvManager"/> to use for retrieving the environment variable. If <see langword="null"/>, the static <see cref="Static.EnvManager.Manager"/> will be used.</param>
+        /// <returns>The environment variable value as an object of type <typeparamref name="T"/>, or the <see langword="default"/> value if the variable is not found.</returns>
+        /// <remarks>
+        /// If the <see cref="EnvironmentVariableAttribute"/> is applied to the enum field, its type is ignored in favor of the specified type <typeparamref name="T"/>.
+        /// If <see cref="EnvironmentVariableAttribute.IsRequired"/> is not explicitly set to <see langword="true"/>, the environment variable is considered optional by default.
+        /// </remarks>
+        public static T Get<T>(this Enum key, IEnvManager? envManager = null)
+        {
+            var attribute = GetAttribute(key);
+            return GetInternal<T>(key, typeof(T), attribute?.IsRequired ?? false, envManager);
+        }
 
-            envManager ??= _envManager;
-            return envManager.GetEnvironmentValue(targetType, key.ToString(), raiseException);
+        /// <summary>
+        /// Retrieves the required environment variable associated with the given enum value, using the type specified in the <see cref="EnvironmentVariableAttribute"/>.<br/>
+        /// Throws an exception if the variable is not found.
+        /// </summary>
+        /// <param name="key">The enum value representing the environment variable.</param>
+        /// <param name="envManager">The <see cref="IEnvManager"/> to use for retrieving the environment variable. If <see langword="null"/>, the static <see cref="Static.EnvManager.Manager"/> will be used.</param>
+        /// <returns>The environment variable value as a <see langword="dynamic"/> object.</returns>
+        /// <exception cref="InvalidOperationException">Thrown if the environment variable is not found.</exception>
+        /// <remarks>
+        /// The type to which the environment variable should be converted is specified by the <see cref="EnvironmentVariableAttribute"/> applied to the enum field.
+        /// If the attribute is not present, the environment variable is treated as a string.
+        /// </remarks>
+        public static dynamic GetRequired(this Enum key, IEnvManager? envManager = null)
+        {
+            var attribute = GetAttribute(key);
+            return GetInternal<object>(key, attribute?.Type ?? typeof(string), true, envManager);
+        }
+
+        /// <summary>
+        /// Retrieves the required environment variable associated with the given enum value, converted to the specified <paramref name="type"/>.<br/>
+        /// Throws an exception if the variable is not found.
+        /// </summary>
+        /// <param name="key">The enum value representing the environment variable.</param>
+        /// <param name="type">The <see cref="Type"/> to which the environment variable should be converted.</param>
+        /// <param name="envManager">The <see cref="IEnvManager"/> to use for retrieving the environment variable. If <see langword="null"/>, the static <see cref="Static.EnvManager.Manager"/> will be used.</param>
+        /// <returns>The environment variable value as an <see cref="object"/>.</returns>
+        /// <exception cref="InvalidOperationException">Thrown if the environment variable is not found.</exception>
+        public static object GetRequired(this Enum key, Type type, IEnvManager? envManager = null)
+        {
+            return GetInternal<object>(key, type, true, envManager);
+        }
+
+        /// <summary>
+        /// Retrieves the required environment variable associated with the given enum value, converted to the specified type <typeparamref name="T"/>.<br/>
+        /// Throws an exception if the variable is not found.
+        /// </summary>
+        /// <typeparam name="T">The target type to which the environment variable should be converted.</typeparam>
+        /// <param name="key">The enum value representing the environment variable.</param>
+        /// <param name="envManager">The <see cref="IEnvManager"/> to use for retrieving the environment variable. If <see langword="null"/>, the static <see cref="Static.EnvManager.Manager"/> will be used.</param>
+        /// <returns>The environment variable value as an object of type <typeparamref name="T"/>.</returns>
+        /// <exception cref="InvalidOperationException">Thrown if the environment variable is not found.</exception>
+        public static T GetRequired<T>(this Enum key, IEnvManager? envManager = null)
+        {
+            return GetInternal<T>(key, typeof(T), true, envManager);
+        }
+
+        /// <summary>
+        /// Retrieves the environment variable associated with the given enum value, converted to the specified type <typeparamref name="T"/>.
+        /// </summary>
+        /// <typeparam name="T">The target type to which the environment variable should be converted.</typeparam>
+        /// <param name="key">The enum value representing the environment variable.</param>
+        /// <param name="type">The <see cref="Type"/> to which the environment variable should be converted.</param>
+        /// <param name="raiseException">If <see langword="true"/>, throws an exception if the environment variable is not found; otherwise, returns the <see langword="default"/> value of <typeparamref name="T"/>.</param>
+        /// <param name="envManager">The <see cref="IEnvManager"/> to use for retrieving the environment variable. If <see langword="null"/>, the static <see cref="Static.EnvManager.Manager"/> will be used.</param>
+        /// <returns>The environment variable value as an object of type <typeparamref name="T"/>, or the <see langword="default"/> value if the variable is not found and <paramref name="raiseException"/> is <see langword="false"/>.</returns>
+        internal static T GetInternal<T>(this Enum key, Type type, bool raiseException = false, IEnvManager? envManager = null)
+        {
+            return envManager == null
+                ? (T)Static.EnvManager.Get(type, key.ToString(), raiseException)
+                : (T)envManager.Get(type, key.ToString(), raiseException);
+        }
+
+        /// <summary>
+        /// Retrieves the <see cref="EnvironmentVariableAttribute"/> associated with the given enum value.
+        /// </summary>
+        /// <param name="key">The enum value representing the environment variable.</param>
+        /// <returns>The <see cref="EnvironmentVariableAttribute"/> associated with the given enum value, or <see langword="null"/> if no attribute is found.</returns>
+        internal static EnvironmentVariableAttribute? GetAttribute(Enum key)
+        {
+            return key.GetType().GetField(key.ToString())?.GetCustomAttribute<EnvironmentVariableAttribute>();
         }
     }
 }
