@@ -188,7 +188,7 @@ public class Example
 }
 // The example displays the following output:
 // warn: EnvironmentManager.Core.IEnvManager[0]
-//       Environment variable 'INVALID_ENVIRONMENT' is null or empty.Trying return default value.
+//       Environment variable 'INVALID_ENVIRONMENT' is null or empty. Trying return default value.
 ```
 
 **Example: Without logging**
