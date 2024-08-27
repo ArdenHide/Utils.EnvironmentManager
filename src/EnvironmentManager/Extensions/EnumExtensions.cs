@@ -119,22 +119,6 @@ namespace EnvironmentManager.Extensions
         }
 
         /// <summary>
-        /// Retrieves the environment variable associated with the given enum value, converted to the specified type <typeparamref name="T"/>.
-        /// </summary>
-        /// <typeparam name="T">The target type to which the environment variable should be converted.</typeparam>
-        /// <param name="key">The enum value representing the environment variable.</param>
-        /// <param name="type">The <see cref="Type"/> to which the environment variable should be converted.</param>
-        /// <param name="raiseException">If <see langword="true"/>, throws an exception if the environment variable is not found; otherwise, returns the <see langword="default"/> value of <typeparamref name="T"/>.</param>
-        /// <param name="envManager">The <see cref="IEnvManager"/> to use for retrieving the environment variable. If <see langword="null"/>, the static <see cref="Static.EnvManager.Manager"/> will be used.</param>
-        /// <returns>The environment variable value as an object of type <typeparamref name="T"/>, or the <see langword="default"/> value if the variable is not found and <paramref name="raiseException"/> is <see langword="false"/>.</returns>
-        internal static T GetInternal<T>(this Enum key, bool raiseException = false, IEnvManager? envManager = null)
-        {
-            return envManager == null
-                ? Static.EnvManager.Get<T>(key.ToString(), raiseException)
-                : envManager.Get<T>(key.ToString(), raiseException);
-        }
-
-        /// <summary>
         /// Retrieves the <see cref="EnvironmentVariableAttribute"/> associated with the given enum value.
         /// </summary>
         /// <param name="key">The enum value representing the environment variable.</param>
