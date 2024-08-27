@@ -23,7 +23,9 @@ namespace EnvironmentManager.Extensions
         public static dynamic Get(this Enum key, IEnvManager? envManager = null)
         {
             var attribute = GetAttribute(key);
-            return GetInternal<object>(key, attribute?.Type ?? typeof(string), attribute?.IsRequired ?? false, envManager);
+            return envManager == null
+                ? Static.EnvManager.Get(attribute?.Type ?? typeof(string), key.ToString(), attribute?.IsRequired ?? false)
+                : envManager.Get(attribute?.Type ?? typeof(string), key.ToString(), attribute?.IsRequired ?? false);
         }
 
         /// <summary>
@@ -40,7 +42,9 @@ namespace EnvironmentManager.Extensions
         public static object Get(this Enum key, Type type, IEnvManager? envManager = null)
         {
             var attribute = GetAttribute(key);
-            return GetInternal<object>(key, type, attribute?.IsRequired ?? false, envManager);
+            return envManager == null
+                ? Static.EnvManager.Get(type, key.ToString(), attribute?.IsRequired ?? false)
+                : envManager.Get(type, key.ToString(), attribute?.IsRequired ?? false);
         }
 
         /// <summary>
@@ -57,7 +61,9 @@ namespace EnvironmentManager.Extensions
         public static T Get<T>(this Enum key, IEnvManager? envManager = null)
         {
             var attribute = GetAttribute(key);
-            return GetInternal<T>(key, typeof(T), attribute?.IsRequired ?? false, envManager);
+            return envManager == null
+                ? Static.EnvManager.Get<T>(key.ToString(), attribute?.IsRequired ?? false)
+                : envManager.Get<T>(key.ToString(), attribute?.IsRequired ?? false);
         }
 
         /// <summary>
@@ -75,7 +81,9 @@ namespace EnvironmentManager.Extensions
         public static dynamic GetRequired(this Enum key, IEnvManager? envManager = null)
         {
             var attribute = GetAttribute(key);
-            return GetInternal<object>(key, attribute?.Type ?? typeof(string), true, envManager);
+            return envManager == null
+                ? Static.EnvManager.GetRequired(attribute?.Type ?? typeof(string),key.ToString())
+                : envManager.GetRequired(attribute?.Type ?? typeof(string), key.ToString());
         }
 
         /// <summary>
@@ -89,7 +97,9 @@ namespace EnvironmentManager.Extensions
         /// <exception cref="InvalidOperationException">Thrown if the environment variable is not found.</exception>
         public static object GetRequired(this Enum key, Type type, IEnvManager? envManager = null)
         {
-            return GetInternal<object>(key, type, true, envManager);
+            return envManager == null
+                ? Static.EnvManager.GetRequired(type, key.ToString())
+                : envManager.GetRequired(type, key.ToString());
         }
 
         /// <summary>
@@ -103,7 +113,9 @@ namespace EnvironmentManager.Extensions
         /// <exception cref="InvalidOperationException">Thrown if the environment variable is not found.</exception>
         public static T GetRequired<T>(this Enum key, IEnvManager? envManager = null)
         {
-            return GetInternal<T>(key, typeof(T), true, envManager);
+            return envManager == null
+                ? Static.EnvManager.GetRequired<T>(key.ToString())
+                : envManager.GetRequired<T>(key.ToString());
         }
 
         /// <summary>
@@ -115,7 +127,7 @@ namespace EnvironmentManager.Extensions
         /// <param name="raiseException">If <see langword="true"/>, throws an exception if the environment variable is not found; otherwise, returns the <see langword="default"/> value of <typeparamref name="T"/>.</param>
         /// <param name="envManager">The <see cref="IEnvManager"/> to use for retrieving the environment variable. If <see langword="null"/>, the static <see cref="Static.EnvManager.Manager"/> will be used.</param>
         /// <returns>The environment variable value as an object of type <typeparamref name="T"/>, or the <see langword="default"/> value if the variable is not found and <paramref name="raiseException"/> is <see langword="false"/>.</returns>
-        internal static T GetInternal<T>(this Enum key, Type type, bool raiseException = false, IEnvManager? envManager = null)
+        internal static T GetInternal<T>(this Enum key, bool raiseException = false, IEnvManager? envManager = null)
         {
             return envManager == null
                 ? Static.EnvManager.Get<T>(key.ToString(), raiseException)
