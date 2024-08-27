@@ -118,8 +118,8 @@ namespace EnvironmentManager.Extensions
         internal static T GetInternal<T>(this Enum key, Type type, bool raiseException = false, IEnvManager? envManager = null)
         {
             return envManager == null
-                ? (T)Static.EnvManager.Get(type, key.ToString(), raiseException)
-                : (T)envManager.Get(type, key.ToString(), raiseException);
+                ? Static.EnvManager.Get<T>(key.ToString(), raiseException)
+                : envManager.Get<T>(key.ToString(), raiseException);
         }
 
         /// <summary>
