@@ -83,11 +83,9 @@ The library also supports retrieving environment variables that are associated w
 
 ### Methods
 ```csharp
-public static dynamic Get(this Enum key, IEnvManager? envManager = null)
 public static object Get(this Enum key, Type type, IEnvManager? envManager = null)
 public static T Get<T>(this Enum key, IEnvManager? envManager = null)
 
-public static dynamic GetRequired(this Enum key, IEnvManager? envManager = null)
 public static object GetRequired(this Enum key, Type type, IEnvManager? envManager = null)
 public static T GetRequired<T>(this Enum key, IEnvManager? envManager = null)
 ```
