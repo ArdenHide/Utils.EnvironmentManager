@@ -11,6 +11,22 @@ namespace EnvironmentManager.Extensions
     public static class EnumExtensions
     {
         /// <summary>
+        /// Retrieves the environment variable associated with the given enum value, converted to the <see cref="string"/> type.
+        /// </summary>
+        /// <param name="key">The enum value representing the environment variable.</param>
+        /// <param name="envManager">The <see cref="IEnvManager"/> to use for retrieving the environment variable. If <see langword="null"/>, the static <see cref="Static.EnvManager.Manager"/> will be used.</param>
+        /// <returns>The environment variable value as an <see cref="string"/>, or the <see langword="null"/> value if the variable is not found.</returns>
+        /// <remarks>
+        /// If <see cref="EnvironmentVariableAttribute.IsRequired"/> is not explicitly set to <see langword="true"/>, the environment variable is considered optional by default.
+        /// </remarks>
+        public static string Get(this Enum key, IEnvManager? envManager = null)
+        {
+            var attribute = GetAttribute(key);
+            var manager = GetEnvManager(envManager);
+            return manager.Get(key.ToString(), attribute?.IsRequired ?? false);
+        }
+
+        /// <summary>
         /// Retrieves the environment variable associated with the given enum value, converted to the specified <paramref name="type"/>.
         /// </summary>
         /// <param name="key">The enum value representing the environment variable.</param>
@@ -44,6 +60,20 @@ namespace EnvironmentManager.Extensions
             var attribute = GetAttribute(key);
             var manager = GetEnvManager(envManager);
             return manager.Get<T>(key.ToString(), attribute?.IsRequired ?? false);
+        }
+
+        /// <summary>
+        /// Retrieves the required environment variable associated with the given enum value, converted to the <see cref="string"/> type.<br/>
+        /// Throws an exception if the variable is not found.
+        /// </summary>
+        /// <param name="key">The enum value representing the environment variable.</param>
+        /// <param name="envManager">The <see cref="IEnvManager"/> to use for retrieving the environment variable. If <see langword="null"/>, the static <see cref="Static.EnvManager.Manager"/> will be used.</param>
+        /// <returns>The environment variable value as an <see cref="string"/>.</returns>
+        /// <exception cref="InvalidOperationException">Thrown if the environment variable is not found.</exception>
+        public static string GetRequired(this Enum key, IEnvManager? envManager = null)
+        {
+            var manager = GetEnvManager(envManager);
+            return manager.GetRequired(key.ToString());
         }
 
         /// <summary>

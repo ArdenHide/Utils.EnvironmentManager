@@ -20,6 +20,14 @@ namespace EnvironmentManager.Core
         public ILogger<IEnvManager> Logger { get; }
 
         /// <summary>
+        /// Retrieves the environment variable with the specified <paramref name="variableName"/>.
+        /// </summary>
+        /// <param name="variableName">The name of the environment variable to retrieve.</param>
+        /// <param name="raiseException">If <see langword="true"/>, throws an exception if the environment variable is not found; otherwise, returns <see langword="default"/>.</param>
+        /// <returns>The value of the environment variable as a <see cref="string"/>, or <see langword="null"/> if not found and <paramref name="raiseException"/> is <see langword="false"/>.</returns>
+        public string Get(string variableName, bool raiseException = false);
+
+        /// <summary>
         /// Retrieves the environment variable with the specified <paramref name="variableName"/> and converts it to the specified <paramref name="type"/>.
         /// </summary>
         /// <param name="type">The target <see cref="Type"/> to which the environment variable should be converted.</param>
@@ -36,6 +44,15 @@ namespace EnvironmentManager.Core
         /// <param name="raiseException">If <see langword="true"/>, throws an exception if the environment variable is not found; otherwise, returns the <see langword="default"/> value of <typeparamref name="T"/>.</param>
         /// <returns>An object of type <typeparamref name="T"/>, or the <see langword="default"/> value of <typeparamref name="T"/> if the variable is not found and <paramref name="raiseException"/> is <see langword="false"/>.</returns>
         public T Get<T>(string variableName, bool raiseException = false);
+
+        /// <summary>
+        /// Retrieves the required environment variable with the specified <paramref name="variableName"/>.<br/>
+        /// Throws an exception if the environment variable is not found.
+        /// </summary>
+        /// <param name="variableName">The name of the environment variable to retrieve.</param>
+        /// <returns>The value of the environment variable as a <see cref="string"/>.</returns>
+        /// <exception cref="InvalidOperationException">Thrown if the environment variable is not found.</exception>
+        public string GetRequired(string variableName);
 
         /// <summary>
         /// Retrieves the required environment variable with the specified <paramref name="variableName"/> and converts it to the specified <paramref name="type"/>.<br/>

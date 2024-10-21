@@ -9,7 +9,22 @@ namespace EnvironmentManager.Tests.Static;
 
 public class EnvManagerStaticTests
 {
-    public class Get : TestData
+    public class Get_String : TestData
+    {
+        [Fact]
+        public void WhenValidValue_ShouldReturnConvertedValue()
+        {
+            var stored = "Hello World!";
+            var variableName = NameOfVariable<string>();
+            Environment.SetEnvironmentVariable(variableName, stored);
+
+            var result = EnvManager.Get(variableName);
+
+            result.Should().BeEquivalentTo(stored);
+        }
+    }
+
+    public class Get_Typed : TestData
     {
         [Theory]
         [MemberData(nameof(CommonTestData))]
@@ -43,7 +58,22 @@ public class EnvManagerStaticTests
         }
     }
 
-    public class GetRequired : TestData
+    public class GetRequired_String : TestData
+    {
+        [Fact]
+        public void WhenValidValue_ShouldReturnConvertedValue()
+        {
+            var stored = "Hello World!";
+            var variableName = NameOfVariable<string>();
+            Environment.SetEnvironmentVariable(variableName, stored);
+
+            var result = EnvManager.GetRequired(variableName);
+
+            result.Should().BeEquivalentTo(stored);
+        }
+    }
+
+    public class GetRequired_Typed : TestData
     {
         [Theory]
         [MemberData(nameof(CommonTestData))]
