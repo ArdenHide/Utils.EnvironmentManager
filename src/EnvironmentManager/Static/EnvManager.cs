@@ -34,6 +34,12 @@ namespace EnvironmentManager.Static
             Manager = new Core.EnvManager(config, logger);
         }
 
+        /// <inheritdoc cref="IEnvManager.Get(string, bool)"/>
+        public static string Get(string variableName, bool raiseException = false)
+        {
+            return Manager.Get(variableName, raiseException);
+        }
+
         /// <inheritdoc cref="IEnvManager.Get(Type, string, bool)"/>
         public static object Get(Type type, string variableName, bool raiseException = false)
         {
@@ -44,6 +50,12 @@ namespace EnvironmentManager.Static
         public static T Get<T>(string variableName, bool raiseException = false)
         {
             return Manager.Get<T>(variableName, raiseException);
+        }
+
+        /// <inheritdoc cref="IEnvManager.GetRequired(string)"/>
+        public static string GetRequired(string variableName)
+        {
+            return Manager.GetRequired(variableName);
         }
 
         /// <inheritdoc cref="IEnvManager.GetRequired(Type, string)"/>

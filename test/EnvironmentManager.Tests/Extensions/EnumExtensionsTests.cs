@@ -7,7 +7,21 @@ namespace EnvironmentManager.Tests.Extensions;
 
 public class EnumExtensionsTests
 {
-    public class Get : TestData
+    public class Get_String : TestData
+    {
+        [Fact]
+        public void WhenValidValue_ShouldReturnConvertedValue()
+        {
+            var stored = "Hello World!";
+            Environment.SetEnvironmentVariable(TestEnum.STRING.ToString(), stored);
+
+            var result = TestEnum.STRING.Get(EnvironmentManager);
+
+            result.Should().BeEquivalentTo(stored);
+        }
+    }
+
+    public class Get_Typed : TestData
     {
         [Theory]
         [MemberData(nameof(EnumTestData))]
@@ -37,7 +51,21 @@ public class EnumExtensionsTests
         }
     }
 
-    public class GetRequired : TestData
+    public class GetRequired_String : TestData
+    {
+        [Fact]
+        public void WhenValidValue_ShouldReturnConvertedValue()
+        {
+            var stored = "Hello World!";
+            Environment.SetEnvironmentVariable(TestEnum.STRING.ToString(), stored);
+
+            var result = TestEnum.STRING.GetRequired(EnvironmentManager);
+
+            result.Should().BeEquivalentTo(stored);
+        }
+    }
+
+    public class GetRequired_Typed : TestData
     {
         [Theory]
         [MemberData(nameof(EnumTestData))]

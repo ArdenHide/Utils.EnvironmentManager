@@ -27,6 +27,12 @@ namespace EnvironmentManager.Core
             Logger = logger ?? NullLogger<IEnvManager>.Instance;
         }
 
+        /// <inheritdoc cref="IEnvManager.Get(string, bool)"/>
+        public string Get(string variableName, bool raiseException = false)
+        {
+            return GetInternal<string>(typeof(string), variableName, raiseException);
+        }
+
         /// <inheritdoc cref="IEnvManager.Get(Type, string, bool)"/>
         public object Get(Type type, string variableName, bool raiseException = false)
         {
@@ -37,6 +43,12 @@ namespace EnvironmentManager.Core
         public T Get<T>(string variableName, bool raiseException = false)
         {
             return GetInternal<T>(typeof(T), variableName, raiseException);
+        }
+
+        /// <inheritdoc cref="IEnvManager.GetRequired(string)"/>
+        public string GetRequired(string variableName)
+        {
+            return GetInternal<string>(typeof(string), variableName, true);
         }
 
         /// <inheritdoc cref="IEnvManager.GetRequired(Type, string)"/>

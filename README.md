@@ -22,9 +22,11 @@ The `EnvManager` class implements `IEnvManager` and provides a concrete implemen
 
 ### Methods
 ```csharp
+public string Get(string variableName, bool raiseException = false);
 public object Get(Type type, string variableName, bool raiseException = false);
 public T Get<T>(string variableName, bool raiseException = false);
 
+public string GetRequired(string variableName);
 public object GetRequired(Type type, string variableName);
 public T GetRequired<T>(string variableName);
 ```
@@ -54,9 +56,11 @@ For convenience, `Utils.EnvironmentManager` provides a static `EnvManager` class
 
 ### Methods
 ```csharp
+public static string Get(string variableName, bool raiseException = false);
 public static object Get(Type type, string variableName, bool raiseException = false);
 public static T Get<T>(string variableName, bool raiseException = false);
 
+public static string GetRequired(string variableName);
 public static object GetRequired(Type type, string variableName);
 public static T GetRequired<T>(string variableName);
 ```
@@ -83,11 +87,13 @@ The library also supports retrieving environment variables that are associated w
 
 ### Methods
 ```csharp
-public static object Get(this Enum key, Type type, IEnvManager? envManager = null)
-public static T Get<T>(this Enum key, IEnvManager? envManager = null)
+public static string Get(this Enum key, IEnvManager? envManager = null);
+public static object Get(this Enum key, Type type, IEnvManager? envManager = null);
+public static T Get<T>(this Enum key, IEnvManager? envManager = null);
 
-public static object GetRequired(this Enum key, Type type, IEnvManager? envManager = null)
-public static T GetRequired<T>(this Enum key, IEnvManager? envManager = null)
+public static string GetRequired(this Enum key, IEnvManager? envManager = null);
+public static object GetRequired(this Enum key, Type type, IEnvManager? envManager = null);
+public static T GetRequired<T>(this Enum key, IEnvManager? envManager = null);
 ```
 
 **Example: Enum Support**

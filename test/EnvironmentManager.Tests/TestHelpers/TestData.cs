@@ -1,6 +1,5 @@
 ﻿using Moq;
 using AutoMapper;
-using FluentAssertions;
 using EnvironmentManager.Core;
 using Microsoft.Extensions.Logging;
 using EnvironmentManager.Attributes;
