@@ -5,7 +5,7 @@
 	<Nullable>enable</Nullable>
 	<PackageId>Utils.EnvironmentManager</PackageId>
 	<Title>Manager for working with environment variables in .NET</Title>
-	<Version>4.0.1</Version>
+	<Version>4.1.0</Version>
 	<Authors>ArdenHide</Authors>
 	<Company>ArdenHide</Company>
 	<Product>Utils.EnvironmentManager</Product>
@@ -17,7 +17,7 @@
 	<PackageLicenseFile>LICENSE</PackageLicenseFile>
 	<PackageProjectUrl>www.nuget.org/packages/Utils.EnvironmentManager/latest</PackageProjectUrl>
 	<PackageIcon>128x128_nuget_transparent.png</PackageIcon>
-	<PackageReleaseNotes>https://github.com/ArdenHide/Utils.EnvironmentManager/releases/tag/4.0.1</PackageReleaseNotes>
+	<PackageReleaseNotes>https://github.com/ArdenHide/Utils.EnvironmentManager/releases/tag/4.1.0</PackageReleaseNotes>
 	<IncludeSymbols>True</IncludeSymbols>
 	<SymbolPackageFormat>snupkg</SymbolPackageFormat>
   </PropertyGroup>
