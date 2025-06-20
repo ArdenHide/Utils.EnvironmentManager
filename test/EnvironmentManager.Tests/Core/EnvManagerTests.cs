@@ -7,6 +7,7 @@ using Microsoft.Extensions.Logging;
 using EnvironmentManager.Configuration;
 using EnvironmentManager.Tests.TestHelpers;
 using Microsoft.Extensions.Logging.Abstractions;
+using Microsoft.VisualStudio.TestPlatform.Utilities;
 
 namespace EnvironmentManager.Tests.Core;
 
@@ -82,6 +83,89 @@ public class EnvManagerTests
             var result = EnvironmentManager.Get<TOutput>(variableName);
 
             result.Should().BeEquivalentTo(expected);
+        }
+    }
+
+    public class GetOrDefault_String : TestData
+    {
+        private readonly string _defaultValue = "Bye World!";
+
+        [Fact]
+        public void WhenValidValue_ShouldReturnConvertedValue()
+        {
+            var stored = "Hello World!";
+            var variableName = NameOfVariable<string>();
+            Environment.SetEnvironmentVariable(variableName, stored);
+
+            var result = EnvironmentManager.GetOrDefault(variableName, _defaultValue);
+
+            result.Should().BeEquivalentTo(stored);
+        }
+
+        [Fact]
+        public void WhenNotFoundValue_ShouldReturnDefaultValue()
+        {
+            var variableName = NameOfVariable<string>();
+
+            var result = EnvironmentManager.GetOrDefault(variableName, _defaultValue);
+
+            result.Should().BeEquivalentTo(_defaultValue);
+        }
+    }
+
+    public class GetOrDefault_Typed : TestData
+    {
+        [Theory]
+        [MemberData(nameof(CommonTestData))]
+        [MemberData(nameof(ImplementedTestData))]
+        public void WhenValidValue_ShouldReturnConvertedValue<TOutput>(string stored, TOutput expected)
+        {
+            var variableName = NameOfVariable<TOutput>();
+            Environment.SetEnvironmentVariable(variableName, stored);
+
+            var result = EnvironmentManager.GetOrDefault(typeof(TOutput), variableName, null!);
+
+            result.Should().BeEquivalentTo(expected);
+        }
+
+        [Theory]
+        [MemberData(nameof(CommonTestData))]
+        [MemberData(nameof(ImplementedTestData))]
+        public void WhenNotFoundValue_ShouldReturnDefaultValue<TOutput>(string _, TOutput defaultValue)
+        {
+            var variableName = NameOfVariable<TOutput>();
+
+            var result = EnvironmentManager.GetOrDefault(typeof(TOutput), variableName, defaultValue!);
+
+            result.Should().BeEquivalentTo(defaultValue);
+        }
+    }
+
+    public class GetOrDefault_Generic : TestData
+    {
+        [Theory]
+        [MemberData(nameof(CommonTestData))]
+        [MemberData(nameof(ImplementedTestData))]
+        public void WhenValidValue_ShouldReturnConvertedValue<TOutput>(string stored, TOutput expected)
+        {
+            var variableName = NameOfVariable<TOutput>();
+            Environment.SetEnvironmentVariable(variableName, stored);
+
+            var result = EnvironmentManager.GetOrDefault<TOutput>(variableName, default!);
+
+            result.Should().BeEquivalentTo(expected);
+        }
+
+        [Theory]
+        [MemberData(nameof(CommonTestData))]
+        [MemberData(nameof(ImplementedTestData))]
+        public void WhenNotFoundValue_ShouldReturnDefaultValue<TOutput>(string _, TOutput defaultValue)
+        {
+            var variableName = NameOfVariable<TOutput>();
+
+            var result = EnvironmentManager.GetOrDefault(variableName, defaultValue!);
+
+            result.Should().BeEquivalentTo(defaultValue);
         }
     }
 
