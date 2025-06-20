@@ -45,6 +45,12 @@ namespace EnvironmentManager.Core
         /// <returns>An object of type <typeparamref name="T"/>, or the <see langword="default"/> value of <typeparamref name="T"/> if the variable is not found and <paramref name="raiseException"/> is <see langword="false"/>.</returns>
         public T Get<T>(string variableName, bool raiseException = false);
 
+        public string GetOrDefault(string variableName, string defaultValue);
+
+        public object GetOrDefault(Type type, string variableName, object defaultValue);
+
+        public T GetOrDefault<T>(string variableName, T defaultValue);
+
         /// <summary>
         /// Retrieves the required environment variable with the specified <paramref name="variableName"/>.<br/>
         /// Throws an exception if the environment variable is not found.

@@ -62,6 +62,24 @@ namespace EnvironmentManager.Extensions
             return manager.Get<T>(key.ToString(), attribute?.IsRequired ?? false);
         }
 
+        public static string GetOrDefault(this Enum key, string defaultValue, IEnvManager? envManager = null)
+        {
+            var manager = GetEnvManager(envManager);
+            return manager.GetOrDefault(key.ToString(), defaultValue);
+        }
+
+        public static object GetOrDefault(this Enum key, Type type, object defaultValue, IEnvManager? envManager = null)
+        {
+            var manager = GetEnvManager(envManager);
+            return manager.GetOrDefault(type, key.ToString(), defaultValue);
+        }
+
+        public static T GetOrDefault<T>(this Enum key, T defaultValue, IEnvManager? envManager = null)
+        {
+            var manager = GetEnvManager(envManager);
+            return manager.GetOrDefault<T>(key.ToString(), defaultValue);
+        }
+
         /// <summary>
         /// Retrieves the required environment variable associated with the given enum value, converted to the <see cref="string"/> type.<br/>
         /// Throws an exception if the variable is not found.

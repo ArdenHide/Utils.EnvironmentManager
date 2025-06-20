@@ -52,6 +52,24 @@ namespace EnvironmentManager.Static
             return Manager.Get<T>(variableName, raiseException);
         }
 
+        /// <inheritdoc cref="IEnvManager.GetOrDefault(string, string)"/>
+        public static string GetOrDefault(string variableName, string defaultValue)
+        {
+            return Manager.GetOrDefault(variableName, defaultValue);
+        }
+
+        /// <inheritdoc cref="IEnvManager.GetOrDefault(Type, string, object)"/>
+        public static object GetOrDefault(Type type, string variableName, object defaultValue)
+        {
+            return Manager.GetOrDefault(type, variableName, defaultValue);
+        }
+
+        /// <inheritdoc cref="IEnvManager.GetOrDefault{T}(string, T)"/>
+        public static T GetOrDefault<T>(string variableName, T defaultValue)
+        {
+            return Manager.GetOrDefault<T>(variableName, defaultValue);
+        }
+
         /// <inheritdoc cref="IEnvManager.GetRequired(string)"/>
         public static string GetRequired(string variableName)
         {

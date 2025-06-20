@@ -3,6 +3,7 @@ using AutoMapper;
 using Microsoft.Extensions.Logging;
 using EnvironmentManager.Configuration;
 using Microsoft.Extensions.Logging.Abstractions;
+using System.Collections.Generic;
 
 namespace EnvironmentManager.Core
 {
@@ -43,6 +44,25 @@ namespace EnvironmentManager.Core
         public T Get<T>(string variableName, bool raiseException = false)
         {
             return GetInternal<T>(typeof(T), variableName, raiseException);
+        }
+
+        /// <inheritdoc cref="IEnvManager.GetOrDefault(string, string)"/>
+        public string GetOrDefault(string variableName, string defaultValue)
+        {
+            return GetInternal<string?>(typeof(string), variableName, false) ?? defaultValue;
+        }
+
+        /// <inheritdoc cref="IEnvManager.GetOrDefault(Type, string, object)"/>
+        public object GetOrDefault(Type type, string variableName, object defaultValue)
+        {
+            return GetInternal<object?>(type, variableName, false) ?? defaultValue;
+        }
+
+        /// <inheritdoc cref="IEnvManager.GetOrDefault{T}(string, T)"/>
+        public T GetOrDefault<T>(string variableName, T defaultValue)
+        {
+            var value = GetInternal<T>(typeof(T), variableName, false);
+            return value == null || EqualityComparer<T>.Default.Equals(value, default!) ? defaultValue : value;
         }
 
         /// <inheritdoc cref="IEnvManager.GetRequired(string)"/>
