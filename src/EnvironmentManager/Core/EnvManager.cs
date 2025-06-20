@@ -1,9 +1,9 @@
 ﻿using System;
 using AutoMapper;
+using System.Collections.Generic;
 using Microsoft.Extensions.Logging;
 using EnvironmentManager.Configuration;
 using Microsoft.Extensions.Logging.Abstractions;
-using System.Collections.Generic;
 
 namespace EnvironmentManager.Core
 {
