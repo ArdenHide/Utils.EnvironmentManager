@@ -62,18 +62,53 @@ namespace EnvironmentManager.Extensions
             return manager.Get<T>(key.ToString(), attribute?.IsRequired ?? false);
         }
 
+        /// <summary>
+        /// Retrieves the environment variable associated with the given enum value and converts it to the <see cref="string"/> type;
+        /// if the variable is missing or empty, returns the supplied <paramref name="defaultValue"/>.
+        /// </summary>
+        /// <param name="key">The enum value representing the environment variable.</param>
+        /// <param name="defaultValue">The fallback value to return when the variable is not found or its value is <see langword="null"/> / empty.</param>
+        /// <param name="envManager">The <see cref="IEnvManager"/> to use for retrieving the environment variable. If <see langword="null"/>, the static <see cref="Static.EnvManager.Manager"/> will be used.</param>
+        /// <returns>The environment-variable value as a <see cref="string"/>, or the provided <paramref name="defaultValue"/> when the variable is not present or invalid.</returns>
+        /// <remarks>The <see cref="EnvironmentVariableAttribute.IsRequired"/> flag is ignored: the variable is always treated as optional, because a default value is supplied.</remarks>
         public static string GetOrDefault(this Enum key, string defaultValue, IEnvManager? envManager = null)
         {
             var manager = GetEnvManager(envManager);
             return manager.GetOrDefault(key.ToString(), defaultValue);
         }
 
+        /// <summary>
+        /// Retrieves the environment variable associated with the given enum value and converts it to the specified <paramref name="type"/>;
+        /// if the variable is missing or cannot be converted, returns the supplied <paramref name="defaultValue"/>.
+        /// </summary>
+        /// <param name="key">The enum value representing the environment variable.</param>
+        /// <param name="type">The target <see cref="Type"/> for conversion.</param>
+        /// <param name="defaultValue">The fallback value to return when the variable is not found or conversion fails.</param>
+        /// <param name="envManager">The <see cref="IEnvManager"/> to use for retrieving the environment variable. If <see langword="null"/>, the static <see cref="Static.EnvManager.Manager"/> will be used.</param>
+        /// <returns>An object of the specified <paramref name="type"/>, or the provided <paramref name="defaultValue"/> when the variable is not present or cannot be converted.</returns>
+        /// <remarks>
+        /// The <see cref="EnvironmentVariableAttribute"/> applied to the enum field (if any) is ignored in favour of the explicit <paramref name="type"/> parameter.
+        /// <see cref="EnvironmentVariableAttribute.IsRequired"/> is ignored because a default value is available.
+        /// </remarks>
         public static object GetOrDefault(this Enum key, Type type, object defaultValue, IEnvManager? envManager = null)
         {
             var manager = GetEnvManager(envManager);
             return manager.GetOrDefault(type, key.ToString(), defaultValue);
         }
 
+        /// <summary>
+        /// Retrieves the environment variable associated with the given enum value and converts it to the specified type <typeparamref name="T"/>;
+        /// if the variable is missing or cannot be converted, returns the supplied <paramref name="defaultValue"/>.
+        /// </summary>
+        /// <typeparam name="T">The target type for conversion.</typeparam>
+        /// <param name="key">The enum value representing the environment variable.</param>
+        /// <param name="defaultValue">The fallback value to return when the variable is not found or conversion fails.</param>
+        /// <param name="envManager">The <see cref="IEnvManager"/> to use for retrieving the environment variable. If <see langword="null"/>, the static <see cref="Static.EnvManager.Manager"/> will be used.</param>
+        /// <returns>An object of type <typeparamref name="T"/>, or the provided <paramref name="defaultValue"/> when the variable is not present or cannot be converted.</returns>
+        /// <remarks>
+        /// The <see cref="EnvironmentVariableAttribute"/> applied to the enum field (if any) is ignored in favour of the generic type <typeparamref name="T"/>.  
+        /// <see cref="EnvironmentVariableAttribute.IsRequired"/> is ignored because a default value is supplied.
+        /// </remarks>
         public static T GetOrDefault<T>(this Enum key, T defaultValue, IEnvManager? envManager = null)
         {
             var manager = GetEnvManager(envManager);
